@@ -1,15 +1,15 @@
-#ifndef GTSYNTHAUDIO_HPP
-#define GTSYNTHAUDIO_HPP
+#ifndef GTSAUDIO_HPP
+#define GTSAUDIO_HPP
 
 
 #include <SFML/Audio.hpp>
 #include "GTSynth.hpp"
 
 
-class GTSynthAudio : public sf::SoundStream
+class GTSAudio : public sf::SoundStream
 {
 public:
-    GTSynthAudio(GTSynth& source, int sampleRate, int timePerChunk);
+    GTSAudio(GTSynth& source, int sampleRate, int timePerChunk);
 
 private:
     virtual bool onGetData(sf::SoundStream::Chunk& samples);

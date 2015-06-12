@@ -1,8 +1,8 @@
-#include "GTSynthAudio.hpp"
+#include "GTSAudio.hpp"
 #include <iostream>
 
 
-GTSynthAudio::GTSynthAudio(GTSynth& source, int sampleRate, int timePerChunk) :
+GTSAudio::GTSAudio(GTSynth& source, int sampleRate, int timePerChunk) :
     source_(source),
     sampleRate_(sampleRate),
     timePerChunk_(timePerChunk),
@@ -12,7 +12,7 @@ GTSynthAudio::GTSynthAudio(GTSynth& source, int sampleRate, int timePerChunk) :
 }
 
 
-bool GTSynthAudio::onGetData(sf::SoundStream::Chunk& chunk) {
+bool GTSAudio::onGetData(sf::SoundStream::Chunk& chunk) {
     std::vector<int16_t> buff(samplesPerChunk_);
     source_.getChunk(buff);
     /*for(auto val : buff) {
@@ -25,5 +25,5 @@ bool GTSynthAudio::onGetData(sf::SoundStream::Chunk& chunk) {
 }
 
 
-void GTSynthAudio::onSeek(sf::Time timeOffset) {
+void GTSAudio::onSeek(sf::Time timeOffset) {
 }
