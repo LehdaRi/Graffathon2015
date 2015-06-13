@@ -5,6 +5,7 @@
 #include <memory>
 #include <cmath>
 #include <array>
+#include <stdio.h>
 #include "GTSynth.hpp"
 #include "GTSSquareOsc.hpp"
 #include "GTSSawOsc.hpp"
@@ -40,13 +41,6 @@ GTSynth::GTSynth(int sampleRate) :
 			notes_[o][n] = middleNotes[n] / std::pow(2, 4-o);
 		}
 	}
-	std::vector<cmd> song(4);
-	for(int i; i < 4; ++i) {
-		song[i].notes = i+1 & (i+1) << 4 & (i+1) << 8 & (i+1) << 12
-						& (i+1) << 16 & (i+1) << 20 & (i+1) << 24 & (i+1) << 28;
-		song[0].octs = 1145324612;
-	}
-	songs_.push_back(song);
 	//setInstrument(0, new GTSSquareOsc(sampleRate));
 	setInstrument(1, new GTSSawOsc(sampleRate));
 	//slots_[0]->setVol(0.4);
@@ -56,7 +50,59 @@ GTSynth::GTSynth(int sampleRate) :
 }
 
 
-int GTSynth::loadSong(int id, std::string) {
+int GTSynth::loadSong(int id, std::string song, std::string pat) {
+	FILE* sf = fopen(song.c_str(), "r");
+	FILE* pf = fopen(pat.c_str(), "r");
+	if(!sf || !pf) {
+		return -1;
+	}
+	std::cout << "files open" << std::endl;
+	char line[50];
+	std::vector<std::vector<cmd>> pats;
+	while(fgets(line, 50, pf)) {
+		std::string linestd(line);
+		std::cout << linestd << std::endl;
+		if(line[0] == '#') {
+			std::vector<cmd> new_pat;
+			pats.push_back(std::move(new_pat));
+			std::cout << "new pat" << std::endl;
+		} else if(line[0] == '%') {
+			std::cout << "envs" << std::endl;
+			cmd new_cmd;
+			new_cmd.octs[0] = -1;
+			sscanf(line, "%% %f %f / %f %f / %f %f / %f %f / %f %f / %f %f / %f %f / %f %f\n",
+					&new_cmd.envs[0], &new_cmd.envs[1], &new_cmd.envs[2], &new_cmd.envs[3], &new_cmd.envs[4], &new_cmd.envs[5], &new_cmd.envs[6], &new_cmd.envs[7],
+					&new_cmd.envs[8], &new_cmd.envs[9], &new_cmd.envs[10], &new_cmd.envs[11], &new_cmd.envs[12], &new_cmd.envs[13], &new_cmd.envs[14], &new_cmd.envs[15]);
+			pats.back().push_back(new_cmd);
+		} else {
+			std::cout << "notes" << std::endl;
+			cmd new_cmd;
+			sscanf(line, "%c%d %c%d %c%d %c%d %c%d %c%d %c%d %c%d\n",
+					&new_cmd.notes[0], &new_cmd.octs[0], &new_cmd.notes[1], &new_cmd.octs[1], &new_cmd.notes[2], &new_cmd.octs[2],
+					&new_cmd.notes[3], &new_cmd.octs[3], &new_cmd.notes[4], &new_cmd.octs[4], &new_cmd.notes[5], &new_cmd.octs[5],
+					&new_cmd.notes[6], &new_cmd.octs[6], &new_cmd.notes[7], &new_cmd.octs[7]);
+			pats.back().push_back(new_cmd);
+		}
+	}
+	fclose(sf);
+	fclose(pf);
+	/*
+	for(auto& pat : pats) {
+		for(auto& cmd : pat) {
+			for(int i = 0; i < 8; ++i) {
+				if(cmd.octs[0] == -1) {
+					std::cout << "env " << std::endl;
+					std::cout << cmd.envs[i] << std::endl;
+				} else {
+					std::cout << "note " << std::endl;
+					std::cout << cmd.notes[i] << std::endl;
+					std::cout << cmd.octs[i] << std::endl;
+				}
+			}
+		}
+	}
+	*/
+	pats_.push_back(std::move(pats));
 	return -1;
 }
 
@@ -81,12 +127,10 @@ void GTSynth::getChunk(std::vector<int16_t>& buff) {
 			currOct_ = (currOct_ + 1) % 9;
 		}
 		currNote_ = (currNote_ + 1) % 12;
-		//slots_[0]->setFreq(notes_[currOct_][currNote_]);
 		slots_[1]->on(true);
 		slots_[1]->setFreq(notes_[currOct_][currNote_]);
 	}
 	currSample_ += size;
-	//std::cout << currSample_/sampleRate_ << std::endl;
 }
 
 

@@ -15,9 +15,10 @@
 
 
 struct cmd {
-	uint32_t notes;
-	uint32_t octs;
-	int len;
+	float envs[NUM_SLOTS*2];
+	// A zero value means no change!
+	char notes[NUM_SLOTS];
+	int octs[NUM_SLOTS];
 };
 
 
@@ -26,7 +27,7 @@ class GTSynth
 public:
 	GTSynth(int sampleRate);
     // Returns song length in seconds on success or -1 on failure
-    int loadSong(int id, std::string);
+    int loadSong(int id, std::string song, std::string pat);
     // Returns 1 on success or -1 on failure
     int playSong(int id);
     // Calculate next song chunk
@@ -35,7 +36,8 @@ public:
 
 
 private:
-	std::vector<std::vector<cmd>> songs_;
+	std::vector<std::vector<int>> songs_;
+	std::vector<std::vector<std::vector<cmd>>> pats_;
 	std::array<std::array<float, 12>, 9> notes_;
 	void setInstrument(int slot, GTSGenerator* instr);
 	std::vector<GTSGenerator*> slots_;
