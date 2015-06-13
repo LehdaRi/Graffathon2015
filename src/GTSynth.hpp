@@ -36,7 +36,7 @@ public:
 
 
 private:
-	std::vector<std::vector<int>> songs_;
+	std::vector<std::vector<std::vector<int>>> songs_;
 	std::vector<std::vector<std::vector<cmd>>> pats_;
 	std::array<std::array<float, 12>, 9> notes_;
 	void setInstrument(int slot, GTSGenerator* instr);

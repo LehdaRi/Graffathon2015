@@ -50,9 +50,9 @@ GTSynth::GTSynth(int sampleRate) :
 }
 
 
-int GTSynth::loadSong(int id, std::string song, std::string pat) {
-	FILE* sf = fopen(song.c_str(), "r");
-	FILE* pf = fopen(pat.c_str(), "r");
+int GTSynth::loadSong(int id, std::string songFile, std::string patFile) {
+	FILE* sf = fopen(songFile.c_str(), "r");
+	FILE* pf = fopen(patFile.c_str(), "r");
 	if(!sf || !pf) {
 		return -1;
 	}
@@ -84,6 +84,13 @@ int GTSynth::loadSong(int id, std::string song, std::string pat) {
 			pats.back().push_back(new_cmd);
 		}
 	}
+	std::vector<std::vector<int>> song;
+	while(fgets(line, 50, pf)) {
+		std::vector<int> bar(8);
+		sscanf(line, "%d %d %d %d %d %d %d %d\n",
+				&bar[0], &bar[1], &bar[2], &bar[3], &bar[4], &bar[5], &bar[6], &bar[7]);
+		song.push_back(std::move(bar));
+	}
 	fclose(sf);
 	fclose(pf);
 	/*
@@ -103,6 +110,7 @@ int GTSynth::loadSong(int id, std::string song, std::string pat) {
 	}
 	*/
 	pats_.push_back(std::move(pats));
+	songs_.push_back(std::move(song));
 	return -1;
 }
 
