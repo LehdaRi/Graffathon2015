@@ -25,7 +25,8 @@ GTSynth::GTSynth(int sampleRate) :
 	currPat_(0),
 	patStart_(0),
 	stepLen_(0),
-	stepStart_(0)
+	stepStart_(0),
+	songSize_(0)
 {
 	const std::array<float, 12> middleNotes = {
 		261.63,
@@ -62,34 +63,36 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 	}
 	std::cout << "files open" << std::endl;
 	char line[50];
-	std::vector<std::vector<cmd>> pats;
+	std::vector<std::vector<std::vector<Cmd>>> pats;
+	int instrNo = 0;
 	while(fgets(line, 50, pf)) {
 		std::string linestd(line);
 		std::cout << linestd << std::endl;
 		if(line[0] == '#') {
-			std::vector<cmd> new_pat;
-			pats.push_back(std::move(new_pat));
+			std::vector<Cmd> new_pat;
+			sscanf(line, "# %d\n", &instrNo);
+			if(instrNo <= pats.size()) {
+				std::vector<std::vector<Cmd>> instrPats;
+				pats.push_back(instrPats);
+			}
+			pats[instrNo].push_back(std::move(new_pat));
 			std::cout << "new pat" << std::endl;
 		} else {
-			cmd new_cmd;
-			new_cmd.envs.resize(16);
-			new_cmd.notes.resize(8);
-			new_cmd.octs.resize(8);
+			Cmd new_cmd;
 			if(line[0] == '%') {
 				std::cout << "envs" << std::endl;
-				new_cmd.octs[0] = -1;
-				sscanf(line, "%% %f %f / %f %f / %f %f / %f %f / %f %f / %f %f / %f %f / %f %f\n",
-						&new_cmd.envs[0], &new_cmd.envs[1], &new_cmd.envs[2], &new_cmd.envs[3], &new_cmd.envs[4], &new_cmd.envs[5], &new_cmd.envs[6], &new_cmd.envs[7],
-						&new_cmd.envs[8], &new_cmd.envs[9], &new_cmd.envs[10], &new_cmd.envs[11], &new_cmd.envs[12], &new_cmd.envs[13], &new_cmd.envs[14], &new_cmd.envs[15]);
-				pats.back().push_back(new_cmd);
+				new_cmd.oct = -1;
+				sscanf(line, "%% %f %f\n", &new_cmd.a, &new_cmd.r);
+			} else if(line[0] == '!') {
+				std::cout << "vol" << std::endl;
+				new_cmd.oct = -2;
+				sscanf(line, "! %f\n", &new_cmd.vol);
+				std::cout << new_cmd.vol << std::endl;
 			} else {
 				std::cout << "notes" << std::endl;
-				sscanf(line, "%d %d / %d %d / %d %d / %d %d / %d %d / %d %d / %d %d / %d %d\n",
-						&new_cmd.notes[0], &new_cmd.octs[0], &new_cmd.notes[1], &new_cmd.octs[1], &new_cmd.notes[2], &new_cmd.octs[2],
-						&new_cmd.notes[3], &new_cmd.octs[3], &new_cmd.notes[4], &new_cmd.octs[4], &new_cmd.notes[5], &new_cmd.octs[5],
-						&new_cmd.notes[6], &new_cmd.octs[6], &new_cmd.notes[7], &new_cmd.octs[7]);
-				pats.back().push_back(new_cmd);
+				sscanf(line, "%d %d\n", &new_cmd.note, &new_cmd.oct);
 			}
+			pats[instrNo].back().push_back(new_cmd);
 		}
 	}
 	std::vector<std::vector<int>> song;
@@ -101,16 +104,19 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 	}
 	fclose(sf);
 	fclose(pf);
-	for(auto& pat : pats) {
-		for(auto& cmd : pat) {
-			for(int i = 0; i < 8; ++i) {
-				if(cmd.octs[0] == -1) {
+	for(auto& instr : pats) {
+		for(auto& pat : instr) {
+			for(auto& cmd : pat) {
+				if(cmd.oct == -1) {
 					std::cout << "env " << std::endl;
-					std::cout << cmd.envs[i] << std::endl;
+					std::cout << cmd.a << " " << cmd.r << std::endl;
+				} else if(cmd.oct == -2) {
+					std::cout << "vol " << std::endl;
+					std::cout << cmd.vol << std::endl;
 				} else {
 					std::cout << "note " << std::endl;
-					std::cout << cmd.notes[i] << std::endl;
-					std::cout << cmd.octs[i] << std::endl;
+					std::cout << cmd.note << std::endl;
+					std::cout << cmd.oct << std::endl;
 				}
 			}
 		}
@@ -130,21 +136,21 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 
 int GTSynth::selectSong(int id) {
 	selectedSong_ = id;
-	currStep_ = 0;
-	currPat_ = 0;
-	patStart_ = 0;
+	currSample_ = 0;
+	songSize_ = renderedSongs_[id].size();
 	return 0;
 }
 
 
 void GTSynth::renderSongs() {
-	std::cout << "yee" << pats_[0][0][0].octs[0] << std::endl;
+	std::cout << "yee" << pats_[0][0][0][0].oct << std::endl;
 	// Song
 	//std::cout << "1" << std::endl << std::flush;
 	for(int i = 0; i < songs_.size(); ++i) {
 		//std::cout << "2" << std::endl << std::flush;
 		std::vector<int16_t> new_song;
-		int stepLen = 15 / tempos_[i] * sampleRate_;
+		int stepLen = 15.0 / tempos_[i] * sampleRate_;
+		std::cout << tempos_[i] << " " << sampleRate_ << " " << stepLen << std::endl;
 		// Song line
 		for(int j = 0; j < songs_[i].size(); ++j) {
 			//std::cout << "3" << std::endl << std::flush;
@@ -153,58 +159,56 @@ void GTSynth::renderSongs() {
 			for(int k = 0; k < 16; ++k) {
 				//std::cout << "5" << std::endl << std::flush;
 				// Slots
+				std::vector<float> mix(stepLen);
 				for(int s = 0; s < 8; ++s) {
 					//std::cout << "6" << std::endl << std::flush;
 					if(slots_[s]) {
-						cmd& step = pats_[i][songLine[s]][k];
-						if(step.octs[0] == -1) {
-							// säädä envit
+						Cmd& step = pats_[i][s][songLine[s]][k];
+						//std::cout << "i " << i << " j " << j << " k " << k << " s " << s << std::endl;
+						if(step.oct == -1) {
+							slots_[s]->setEnv(step.a, step.r);
+						} else if(step.oct == -2) {
+							slots_[s]->setVol(step.vol);
 						} else {
-							std::cout << notes_[step.octs[s]][step.notes[s]] << std::endl;
-							slots_[s]->setFreq(notes_[step.octs[s]][step.notes[s]]);
+							slots_[s]->setFreq(notes_[step.oct][step.note]);
 						}
-						//std::cout << step.notes[0] << std::endl;
-						//slots_[s]->setFreq(notes_[(pats_[i][songLine[s]][k].octs[s])][(notes_[pats_[i][songLine[s]][k].notes[s]-48])]);
-						//slots_[s]->setFreq(notes_[pats_[i][j][k].octs[k]][pats_[i][j][k].notes[k]-48]);
+						std::vector<float> chunk(stepLen);
+						slots_[s]->getChunk(chunk);
+						for(int n = 0; n < stepLen; ++n) {
+							mix[n] += chunk[n];
+						}
 					}
 				}
+				std::vector<int16_t> converted(stepLen);
+				for(int n = 0; n < stepLen; ++n) {
+					converted[n] = mix[n] * INT16_MAX;
+				}
+				std::copy(converted.begin(), converted.end(), std::back_inserter(new_song));
 			}
 		}
+		std::cout << new_song.size() << std::endl;
+		renderedSongs_.push_back(new_song);
 	}
 }
 
 
-void GTSynth::getChunk(std::vector<int16_t>& buff) {
-	if(selectedSong_ != -1) {
+bool GTSynth::getChunk(std::vector<int16_t>& buff) {
+	if(selectedSong_ == -1) {
 		std::fill(buff.begin(), buff.end(), 0);
-		return;
-	}
-	std::fill(buff.begin(), buff.end(), 0);
-	/*
-	int outSize = buff.size();
-	std::vector<float> mixOut(outSize, 0);
-	std::vector<float> temp(outSize);
-	for(int i = 0; i < NUM_SLOTS; ++i) {
-		if(slots_[i]) {
-			slots_[i]->getChunk(temp);
-			for(int j = 0; j < size; ++j) {
-				mixOut[j] += temp[j];
-			}
-		}
+		return false;
 	}
 	for(int i = 0; i < buff.size(); ++i) {
-		buff[i] = mixOut[i]*INT16_MAX;
-	}
-	if(currSample_/sampleRate_-lastTime_ >= 0.5) {
-		if(currNote_ == 11) {
-			currOct_ = (currOct_ + 1) % 9;
+		if(currSample_ >= songSize_) {
+			for(int j = i; j < buff.size(); ++j) {
+				buff[j] = 0;
+				return false;
+				selectedSong_ = -1;
+			}
 		}
-		currNote_ = (currNote_ + 1) % 12;
-		slots_[1]->on(true);
-		slots_[1]->setFreq(notes_[currOct_][currNote_]);
+		buff[i] = renderedSongs_[selectedSong_][currSample_];
+		currSample_ += 1;
 	}
-	currSample_ += size;
-	*/
+	return true;
 }
 
 

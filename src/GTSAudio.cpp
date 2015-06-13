@@ -14,14 +14,14 @@ GTSAudio::GTSAudio(GTSynth& source, int sampleRate, int timePerChunk) :
 
 bool GTSAudio::onGetData(sf::SoundStream::Chunk& chunk) {
     std::vector<int16_t> buff(samplesPerChunk_);
-    source_.getChunk(buff);
+    bool ret = source_.getChunk(buff);
     /*for(auto val : buff) {
     	std::cout << val << std::endl;
     }*/
     chunk.sampleCount = samplesPerChunk_;
     //std::cout << samplesPerChunk_ << std::endl;
     chunk.samples = &buff[0];
-    return true;
+    return ret;
 }
 
 

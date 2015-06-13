@@ -14,11 +14,12 @@
 #define INT16_MAX 32767
 
 
-struct cmd {
-	std::vector<float> envs;
-	// A zero value means no change!
-	std::vector<int> notes;
-	std::vector<int> octs;
+struct Cmd {
+	float a;
+	float r;
+	int note;
+	int oct;
+	float vol;
 };
 
 
@@ -31,7 +32,7 @@ public:
     // Returns 0 on success or -1 on failure
     int selectSong(int id);
     // Calculate next song chunk
-    void getChunk(std::vector<int16_t>& buff);
+    bool getChunk(std::vector<int16_t>& buff);
     void renderSongs();
     void setTempo(int tempo);
     GTSynth(const GTSynth&) = delete;
@@ -40,7 +41,7 @@ public:
 private:
 	std::vector<std::vector<int16_t>> renderedSongs_;
 	std::vector<std::vector<std::vector<int>>> songs_;
-	std::vector<std::vector<std::vector<cmd>>> pats_;
+	std::vector<std::vector<std::vector<std::vector<Cmd>>>> pats_;
 	std::array<std::array<float, 12>, 9> notes_;
 	void setInstrument(int slot, GTSGenerator* instr);
 	std::vector<GTSGenerator*> slots_;
@@ -58,6 +59,7 @@ private:
 	int selectedSong_;
 	int currPat_;
 	int stepLen_;
+	int songSize_;
 };
 
 #endif
