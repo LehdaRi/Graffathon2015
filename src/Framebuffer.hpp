@@ -11,6 +11,7 @@ public:
     ~Framebuffer(void);
 
     void bind(void);
+    GLuint getTextureId(void) const;
 
 private:
     GLuint width_;

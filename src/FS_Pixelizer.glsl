@@ -16,19 +16,20 @@ varying vec2 UV;
 
 out vec4 color;
 
-uniform sampler2D tex;
+uniform sampler2D frameTexture;
+uniform float aspectRatio;
 
 const float imageBurn = 0.5;
-const float pixelBurn = 0.0;
+const float pixelBurn = 0.5;
 const float xDivs = 800.0/16;
 const float yDivs = 600.0/16;
 
 void main() {
-    color = texture(tex, UV);
+    color = texture(frameTexture, UV);
 
     if (imageBurn > 0.0) {
         vec2 UVRounded = vec2(round(UV.x*xDivs)/xDivs, round(UV.y*yDivs)/yDivs);
-        vec4 pixColor = texture(tex, UVRounded);
+        vec4 pixColor = texture(frameTexture, UVRounded);
         vec4 pixColorRounded = round(pixColor);
         vec4 burnColor = pixColor + pixelBurn*(pixColorRounded-pixColor);
 

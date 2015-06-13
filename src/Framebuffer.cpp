@@ -39,3 +39,7 @@ void Framebuffer::bind(void) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
 }
 
+GLuint Framebuffer::getTextureId(void) const {
+    return texture_;
+}
+

@@ -7,8 +7,8 @@
 Metaballs::Metaballs(std::default_random_engine& rnd,
                      const std::string& vsFileName,
                      const std::string& fsFileName) :
-    uniformLoc_aspectRatio(-1),
-    uniformLoc_ballPos(-1)
+    uniformLoc_aspectRatio_(-1),
+    uniformLoc_ballPos_(-1)
 {
     double rn = 1.0/(double)rnd.max();
     for (auto i=0; i<NBALLS; ++i) {
@@ -33,8 +33,8 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
     ShaderObject vs(vsFileName, GL_VERTEX_SHADER);
     ShaderObject fs(fsFileName, GL_FRAGMENT_SHADER);
     shader_ = std::move(ShaderProgram( { &vs, &fs } ));
-    uniformLoc_aspectRatio = glGetUniformLocation(shader_.getId(), "aspectRatio");
-    uniformLoc_ballPos = glGetUniformLocation(shader_.getId(), "ballPos");
+    uniformLoc_aspectRatio_ = glGetUniformLocation(shader_.getId(), "aspectRatio");
+    uniformLoc_ballPos_ = glGetUniformLocation(shader_.getId(), "ballPos");
 }
 
 void Metaballs::draw(GLuint quadId, float time, float aspectRatio) {
@@ -42,12 +42,18 @@ void Metaballs::draw(GLuint quadId, float time, float aspectRatio) {
 
     glUseProgram(shader_.getId());
 
-    glUniform1f(uniformLoc_aspectRatio, aspectRatio);
-    glUniform4fv(uniformLoc_ballPos, NBALLS*4, ballData);
+    glUniform1f(uniformLoc_aspectRatio_, aspectRatio);
+    glUniform4fv(uniformLoc_ballPos_, NBALLS*4, ballData);
 
     glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void Metaballs::draw(GLuint quadId, Framebuffer& fb, float time, float aspectRatio) {
+    fb.bind();
+    draw(quadId, time, aspectRatio);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Metaballs::generateBallData(float time) {

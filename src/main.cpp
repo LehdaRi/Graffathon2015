@@ -1,4 +1,6 @@
+#include "Framebuffer.hpp"
 #include "Metaballs.hpp"
+#include "Pixelizer.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
@@ -28,12 +30,9 @@ int main(void) {
 
     std::default_random_engine rnd(711517);
 
+    Framebuffer fb(WW, WH);
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
-
-    ShaderObject vs_pixelizer("src/VS_Pixelizer.glsl", GL_VERTEX_SHADER);
-    ShaderObject fs_pixelizer("src/FS_Pixelizer.glsl", GL_FRAGMENT_SHADER);
-    ShaderProgram pixelizerShader( { &vs_pixelizer, &fs_pixelizer } );
-
+    Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -53,6 +52,7 @@ int main(void) {
 
     //  Time
     double t = 0.0;
+    const float ar = (float)WW/(float)WH;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -62,13 +62,12 @@ int main(void) {
         }
 
         //such meta
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        //glViewport(0, 0, WW, WH);
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        mb.draw(quadId, t, (float)WW/(float)WH);
+        mb.draw(quadId, fb, t, (float)WW/(float)WH);
 
-        /*glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glViewport(0, 0, WW, WH);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        pixelizer.draw(quadId, t, ar, fb.getTextureId());
+        /*glViewport(0, 0, WW, WH);
         glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
         glUseProgram(pixelizerShader.getId());

@@ -3,6 +3,7 @@
 
 
 #include "ShaderProgram.hpp"
+#include "Framebuffer.hpp"
 
 #include <random>
 #include <string>
@@ -19,6 +20,7 @@ public:
               const std::string& fsFileName);
 
     void draw(GLuint quadId, float time, float aspectRatio);
+    void draw(GLuint quadId, Framebuffer& fb, float time, float aspectRatio);
 
 private:
     struct BallParams {
@@ -33,8 +35,8 @@ private:
     float ballData[NBALLS*4];
 
     ShaderProgram shader_;
-    GLint uniformLoc_aspectRatio;
-    GLint uniformLoc_ballPos;
+    GLint uniformLoc_aspectRatio_;
+    GLint uniformLoc_ballPos_;
 
     void generateBallData(float time);
 };
