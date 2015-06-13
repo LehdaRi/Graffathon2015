@@ -143,35 +143,37 @@ int GTSynth::selectSong(int id) {
 
 
 void GTSynth::renderSongs() {
-	std::cout << "yee" << pats_[0][0][0][0].oct << std::endl;
 	// Song
-	//std::cout << "1" << std::endl << std::flush;
 	for(int i = 0; i < songs_.size(); ++i) {
-		//std::cout << "2" << std::endl << std::flush;
 		std::vector<int16_t> new_song;
 		int stepLen = 15.0 / tempos_[i] * sampleRate_;
 		std::cout << tempos_[i] << " " << sampleRate_ << " " << stepLen << std::endl;
 		// Song line
 		for(int j = 0; j < songs_[i].size(); ++j) {
-			//std::cout << "3" << std::endl << std::flush;
 			std::vector<int>& songLine = songs_[i][j];
+			std::vector<int> offsets(8, 0);
 			// Steps
 			for(int k = 0; k < 16; ++k) {
-				//std::cout << "5" << std::endl << std::flush;
 				// Slots
 				std::vector<float> mix(stepLen);
 				for(int s = 0; s < 8; ++s) {
-					//std::cout << "6" << std::endl << std::flush;
 					if(slots_[s]) {
-						Cmd& step = pats_[i][s][songLine[s]][k];
-						//std::cout << "i " << i << " j " << j << " k " << k << " s " << s << std::endl;
-						if(step.oct == -1) {
-							slots_[s]->setEnv(step.a, step.r);
-						} else if(step.oct == -2) {
-							slots_[s]->setVol(step.vol);
-						} else {
-							slots_[s]->setFreq(notes_[step.oct][step.note]);
+						Cmd& step = pats_[i][s][songLine[s]][k+offsets[s]];
+						while(step.oct < 0) {
+							if(step.oct == -1) {
+								std::cout << "env" << std::endl;
+								slots_[s]->setEnv(step.a, step.r);
+								offsets[s] += 1;
+								step = pats_[i][s][songLine[s]][k+offsets[s]];
+							} else if(step.oct == -2) {
+								std::cout << "vol" << std::endl;
+								slots_[s]->setVol(step.vol);
+								offsets[s] += 1;
+								step = pats_[i][s][songLine[s]][k+offsets[s]];
+							}
 						}
+						std::cout << "note" << std::endl;
+						slots_[s]->setFreq(notes_[step.oct][step.note]);
 						std::vector<float> chunk(stepLen);
 						slots_[s]->getChunk(chunk);
 						for(int n = 0; n < stepLen; ++n) {
@@ -185,6 +187,7 @@ void GTSynth::renderSongs() {
 				}
 				std::copy(converted.begin(), converted.end(), std::back_inserter(new_song));
 			}
+			std::cout << "line_end" << std::endl;
 		}
 		std::cout << new_song.size() << std::endl;
 		renderedSongs_.push_back(new_song);
