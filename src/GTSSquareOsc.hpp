@@ -15,7 +15,6 @@ public:
 
 
 private:
-	float phase_;
 	float phaseIncr_;
 	float dutyCycle_;
 	float midPoint_;

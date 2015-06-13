@@ -5,7 +5,6 @@
 
 GTSTriOsc::GTSTriOsc(int sampleRate) :
 	GTSGenerator(sampleRate),
-	phase_(0),
 	phaseIncr_(0)
 {
 }

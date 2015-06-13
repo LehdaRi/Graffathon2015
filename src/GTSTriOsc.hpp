@@ -14,7 +14,6 @@ public:
 
 
 private:
-	float phase_;
 	float phaseIncr_;
 };
 

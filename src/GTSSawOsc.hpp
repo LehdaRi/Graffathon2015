@@ -14,8 +14,7 @@ public:
 
 
 private:
-	float phase_;
-	float ampIncr_;
+	float ampInc_;
 	float val_;
 };
 

@@ -14,6 +14,13 @@
 #define INT16_MAX 32767
 
 
+struct cmd {
+	uint32_t notes;
+	uint32_t octs;
+	int len;
+};
+
+
 class GTSynth
 {
 public:
@@ -28,6 +35,7 @@ public:
 
 
 private:
+	std::vector<std::vector<cmd>> songs_;
 	std::array<std::array<float, 12>, 9> notes_;
 	void setInstrument(int slot, GTSGenerator* instr);
 	std::vector<GTSGenerator*> slots_;
@@ -37,6 +45,8 @@ private:
 	int currNote_;
 	int currOct_;
 	float lastTime_;
+	int tempo_;
+	int currStep_;
 };
 
 #endif

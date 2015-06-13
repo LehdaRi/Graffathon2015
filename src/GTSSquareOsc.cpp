@@ -5,7 +5,6 @@
 
 GTSSquareOsc::GTSSquareOsc(int sampleRate) :
 	GTSGenerator(sampleRate),
-	phase_(0),
 	phaseIncr_(0)
 {
 	setDuty(0.5);

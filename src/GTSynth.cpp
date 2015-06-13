@@ -17,7 +17,9 @@ GTSynth::GTSynth(int sampleRate) :
 	currSample_(0),
 	currNote_(0),
 	currOct_(0),
-	lastTime_(0)
+	lastTime_(0),
+	tempo_(0),
+	currStep_(0)
 {
 	const std::array<float, 12> middleNotes = {
 		261.63,
@@ -38,10 +40,19 @@ GTSynth::GTSynth(int sampleRate) :
 			notes_[o][n] = middleNotes[n] / std::pow(2, 4-o);
 		}
 	}
-	setInstrument(0, new GTSSquareOsc(sampleRate));
+	std::vector<cmd> song(4);
+	for(int i; i < 4; ++i) {
+		song[i].notes = i+1 & (i+1) << 4 & (i+1) << 8 & (i+1) << 12
+						& (i+1) << 16 & (i+1) << 20 & (i+1) << 24 & (i+1) << 28;
+		song[0].octs = 1145324612;
+	}
+	songs_.push_back(song);
+	//setInstrument(0, new GTSSquareOsc(sampleRate));
 	setInstrument(1, new GTSSawOsc(sampleRate));
-	slots_[0]->setVol(0.4);
+	//slots_[0]->setVol(0.4);
 	slots_[1]->setVol(0.4);
+	slots_[1]->setEnv(0.5, 0.5);
+	tempo_ = 120;
 }
 
 
@@ -70,7 +81,8 @@ void GTSynth::getChunk(std::vector<int16_t>& buff) {
 			currOct_ = (currOct_ + 1) % 9;
 		}
 		currNote_ = (currNote_ + 1) % 12;
-		slots_[0]->setFreq(notes_[currOct_][currNote_]);
+		//slots_[0]->setFreq(notes_[currOct_][currNote_]);
+		slots_[1]->on(true);
 		slots_[1]->setFreq(notes_[currOct_][currNote_]);
 	}
 	currSample_ += size;
