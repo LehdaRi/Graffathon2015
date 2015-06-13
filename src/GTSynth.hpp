@@ -6,12 +6,12 @@
 #include <vector>
 #include <cstdint>
 #include <vector>
+#include <array>
 #include <memory>
 #include "GTSGenerator.hpp"
 
-#define TWOPI 6.2831853071795864
-#define INT16_MAX 32767
 #define NUM_SLOTS 8
+#define INT16_MAX 32767
 
 
 class GTSynth
@@ -26,12 +26,17 @@ public:
     void getChunk(std::vector<int16_t>& buff);
     GTSynth(const GTSynth&) = delete;
 
-    
+
 private:
-	void setInstrument(int slot, std::unique_ptr<GTSGenerator> instr);
-	std::vector<std::unique_ptr<GTSGenerator>> slots_;
+	std::array<std::array<float, 12>, 9> notes_;
+	void setInstrument(int slot, GTSGenerator* instr);
+	std::vector<GTSGenerator*> slots_;
 	int sampleRate_;
 	float phase_;
+	uint32_t currSample_;
+	int currNote_;
+	int currOct_;
+	float lastTime_;
 };
 
 #endif
