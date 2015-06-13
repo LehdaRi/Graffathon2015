@@ -15,7 +15,7 @@ private:
     virtual bool onGetData(sf::SoundStream::Chunk& samples);
     virtual void onSeek(sf::Time timeOffset);
 
-    GTSynth source_;
+    GTSynth& source_;
     int sampleRate_;
     int timePerChunk_;  // In milliseconds
     int samplesPerChunk_;

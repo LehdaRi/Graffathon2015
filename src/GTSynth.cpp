@@ -2,13 +2,17 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
+#include <memory>
 #include "GTSynth.hpp"
+#include "GTSSquareOsc.hpp"
 
 
 GTSynth::GTSynth(int sampleRate) :
 	sampleRate_(sampleRate),
-	phase_(0)
+	phase_(0),
+	slots_(NUM_SLOTS)
 {
+	setInstrument(0, std::make_unique<GTSSquareOsc>(sampleRate));
 }
 
 
@@ -18,21 +22,10 @@ int GTSynth::loadSong(int id, std::string) {
 
 
 void GTSynth::getChunk(std::vector<int16_t>& buff) {
-	int freq = 100;
-	float dutyCycle = 0.5;
-	float phaseIncr = (TWOPI / sampleRate_) * freq;
-	//std::cout << phaseIncr << std::endl;
-	float midPoint = TWOPI * dutyCycle;
-	//std::cout << midPoint << std::endl;
-	for (int n = 0; n < buff.size(); n++) {
-		phase_ += phaseIncr;
-		if (phase_ >= TWOPI)
-			phase_ = 0;
-		if (phase_ >= midPoint)
-			buff[n] = INT16_MIN+500;
-		else
-			buff[n] = INT16_MAX-500;
-		//std::cout << buff[n] << std::endl;
-		//std::cout << phase_ << std::endl;
-	}
+	slots_[0]->getChunk(buff);
+}
+
+
+void GTSynth::setInstrument(int slot, std::unique_ptr<GTSGenerator> instr) {
+	slots_[slot] = std::move(instr);
 }

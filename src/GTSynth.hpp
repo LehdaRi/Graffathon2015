@@ -5,9 +5,13 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <vector>
+#include <memory>
+#include "GTSGenerator.hpp"
 
 #define TWOPI 6.2831853071795864
 #define INT16_MAX 32767
+#define NUM_SLOTS 8
 
 
 class GTSynth
@@ -20,7 +24,12 @@ public:
     int playSong(int id);
     // Calculate next song chunk
     void getChunk(std::vector<int16_t>& buff);
+    GTSynth(const GTSynth&) = delete;
+
+    
 private:
+	void setInstrument(int slot, std::unique_ptr<GTSGenerator> instr);
+	std::vector<std::unique_ptr<GTSGenerator>> slots_;
 	int sampleRate_;
 	float phase_;
 };
