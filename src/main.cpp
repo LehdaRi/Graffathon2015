@@ -1,6 +1,7 @@
 #include "Framebuffer.hpp"
 #include "Metaballs.hpp"
 #include "Pixelizer.hpp"
+#include "Life.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
@@ -8,8 +9,11 @@
 
 
 #define PI  3.14159265359
-#define WW  800
-#define WH  600
+#define WW  1280
+#define WH  720
+
+
+#define METATIME 10.0f
 
 
 GLfloat quad[] {
@@ -28,11 +32,13 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 
-    std::default_random_engine rnd(711517);
+    std::default_random_engine rnd(715517);
 
-    Framebuffer fb(WW, WH);
+    Framebuffer fbFull(WW, WH);
+    Framebuffer fb32(32, 32);
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
+    Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -61,29 +67,30 @@ int main(void) {
             window.close();
         }
 
-        //such meta
-        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-        mb.draw(quadId, fb, t, (float)WW/(float)WH);
+        if (t < METATIME) {
+            glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            mb.draw(quadId, fbFull, t, ar);
+            mb.draw(quadId, fb32, t, 1.0f);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        pixelizer.draw(quadId, t, ar, fb.getTextureId());
-        /*glViewport(0, 0, WW, WH);
-        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+            glViewport(0, 0, WW, WH);
 
-        glUseProgram(pixelizerShader.getId());
+            float imageBurn = (t-METATIME+5.0f)*0.25f;
+            if (imageBurn < 0.0f) imageBurn = 0.0f;
+            if (imageBurn > 1.0f) imageBurn = 1.0f;
+            float pixelBurn = t-METATIME+1.0f;
+            if (pixelBurn < 0.0f) pixelBurn = 0.0f;
+            if (pixelBurn > 1.0f) pixelBurn = 1.0f;
 
-        glActiveTexture(GL_TEXTURE0); //make texture register 0 active
-        glBindTexture(GL_TEXTURE_2D, pixelTexture); //bind textureB as
-    	glUniform1i(glGetUniformLocation(pixelizerShader.getId(), "tex"), 0);
-
-        glBindBuffer(GL_ARRAY_BUFFER, quadId);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);*/
+            pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, imageBurn, pixelBurn);
+        }
+        else if (t >= METATIME) {
+            life.draw(quadId, fb32, ar);
+        }
 
         window.display();
 
-        t += 0.016666667;
+        t += 0.0333333333;
     }
 
 

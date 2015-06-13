@@ -15,19 +15,19 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
         ballParams[i].xSpeed = 0.5f+rnd()*rn*3.5f;
         ballParams[i].xPhase = rnd()*rn*PI*2.0f;
         ballParams[i].xTrans = -0.5f+rnd()*rn*1.0f;
-        ballParams[i].xAmp = -1.0f+rnd()*rn*2.0f;
+        ballParams[i].xAmp = rnd()*rn*1.0f;
         ballParams[i].ySpeed = 0.5f+rnd()*rn*3.5f;
         ballParams[i].yPhase = rnd()*rn*PI*2.0f;
         ballParams[i].yTrans = -0.5f+rnd()*rn*1.0f;
-        ballParams[i].yAmp = -1.0f+rnd()*rn*2.0f;
+        ballParams[i].yAmp = rnd()*rn*1.0f;
         ballParams[i].zSpeed = 0.5f+rnd()*rn*3.5f;
         ballParams[i].zPhase = rnd()*rn*PI*2.0f;
         ballParams[i].zTrans = -0.5f+rnd()*rn*1.0f;
-        ballParams[i].zAmp = -1.0f+rnd()*rn*2.0f;
+        ballParams[i].zAmp = rnd()*rn*1.0f;
         ballParams[i].sizeSpeed = 0.1f+rnd()*rn*0.9f;
         ballParams[i].sizePhase = rnd()*rn*PI*2.0f;
-        ballParams[i].sizeTrans = 0.06f+rnd()*rn*0.02f;
-        ballParams[i].sizeAmp = 0.025f+rnd()*rn*0.025f;
+        ballParams[i].sizeTrans = 0.042f+rnd()*rn*0.021f;
+        ballParams[i].sizeAmp = 0.015f+rnd()*rn*0.015f;
     }
 
     ShaderObject vs(vsFileName, GL_VERTEX_SHADER);
