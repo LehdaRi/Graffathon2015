@@ -1,5 +1,5 @@
-#ifndef METABALLS_CPP
-#define METABALLS_HPP
+#ifndef PIXELIZER_HPP
+#define PIXELIZER_HPP
 
 
 #include "ShaderProgram.hpp"
@@ -28,4 +28,4 @@ private:
 };
 
 
-#endif // METABALLS_CPP
+#endif // PIXELIZER_HPP

@@ -21,14 +21,14 @@ uniform float aspectRatio;
 
 const float imageBurn = 0.5;
 const float pixelBurn = 0.5;
-const float xDivs = 800.0/16;
-const float yDivs = 600.0/16;
+const float xDivs = 800.0/20;
+const float yDivs = 600.0/20;
 
 void main() {
     color = texture(frameTexture, UV);
 
     if (imageBurn > 0.0) {
-        vec2 UVRounded = vec2(round(UV.x*xDivs)/xDivs, round(UV.y*yDivs)/yDivs);
+        vec2 UVRounded = vec2((floor(UV.x*xDivs)+0.5)/xDivs, (floor(UV.y*yDivs)+0.5)/yDivs);
         vec4 pixColor = texture(frameTexture, UVRounded);
         vec4 pixColorRounded = round(pixColor);
         vec4 burnColor = pixColor + pixelBurn*(pixColorRounded-pixColor);

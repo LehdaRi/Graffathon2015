@@ -1,4 +1,4 @@
-#ifndef METABALLS_CPP
+#ifndef METABALLS_HPP
 #define METABALLS_HPP
 
 
@@ -42,4 +42,4 @@ private:
 };
 
 
-#endif // METABALLS_CPP
+#endif // METABALLS_HPP
