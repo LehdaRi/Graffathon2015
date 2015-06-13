@@ -1,10 +1,13 @@
-#include "ShaderProgram.hpp"
+#include "Metaballs.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
+#include <random>
 
 
-#define PI 3.14159265359
+#define PI  3.14159265359
+#define WW  800
+#define WH  600
 
 
 GLfloat quad[] {
@@ -18,15 +21,19 @@ GLfloat quad[] {
 
 
 int main(void) {
-    sf::Window window(sf::VideoMode(800, 600), "SFML window");
-    window.setFramerateLimit(60);
+    sf::Window window(sf::VideoMode(WW, WH), "GRAFFAAAAARGHGSOODAONHOMO");
+    window.setActive();
+    window.setFramerateLimit(30);
     glewInit();
 
-    ShaderObject vs("src/VS_Metaballs.glsl", GL_VERTEX_SHADER);
-    ShaderObject fs("src/FS_Metaballs.glsl", GL_FRAGMENT_SHADER);
-    ShaderProgram shader( { &vs, &fs } );
+    std::default_random_engine rnd(711517);
 
-    GLint uniformLoc_ballPos = glGetUniformLocation(shader.getId(), "ballPos");
+    Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
+
+    ShaderObject vs_pixelizer("src/VS_Pixelizer.glsl", GL_VERTEX_SHADER);
+    ShaderObject fs_pixelizer("src/FS_Pixelizer.glsl", GL_FRAGMENT_SHADER);
+    ShaderProgram pixelizerShader( { &vs_pixelizer, &fs_pixelizer } );
+
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -41,13 +48,11 @@ int main(void) {
     //glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-    double t = 0.0;
+    //  Render to texture shit
 
-    GLfloat metaballs[6] = {
-        0.9f*cosf(PI*t),                0.9f*sinf(PI*t),
-        0.4f+0.4f*cosf(PI*1.2345*t),    -0.8f*sinf(PI*2.23564*t),
-        -0.9f*cosf(PI*2.0145*t),        0.9f*sinf(PI*0.76453*t)
-    };
+
+    //  Time
+    double t = 0.0;
 
     while (window.isOpen()) {
         sf::Event event;
@@ -56,28 +61,32 @@ int main(void) {
             window.close();
         }
 
-        window.setActive();
+        //such meta
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glViewport(0, 0, WW, WH);
+        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+        mb.draw(quadId, t, (float)WW/(float)WH);
 
-        glUseProgram(shader.getId());
+        /*glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glViewport(0, 0, WW, WH);
+        glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-        glUniform3fv(uniformLoc_ballPos, 9, metaballs);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glUseProgram(pixelizerShader.getId());
+
+        glActiveTexture(GL_TEXTURE0); //make texture register 0 active
+        glBindTexture(GL_TEXTURE_2D, pixelTexture); //bind textureB as
+    	glUniform1i(glGetUniformLocation(pixelizerShader.getId(), "tex"), 0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, quadId);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);*/
 
         window.display();
 
         t += 0.016666667;
-        metaballs[0] = 0.9f*cosf(PI*t);
-        metaballs[1] = 0.9f*sinf(PI*t);
-        metaballs[2] = 0.25f+0.15f*sinf(PI*t*0.23f);
-
-        metaballs[3] = 0.4f+0.4f*cosf(PI*1.2345*t);
-        metaballs[4] = -0.8f*sinf(PI*2.23564*t);
-        metaballs[5] = 0.15f+0.05f*sinf(PI*t*0.09364f);
-
-        metaballs[6] = 0.9f*sinf(PI*0.76453*t);
-        metaballs[7] = 0.9f*sinf(PI*0.76453*t);
-        metaballs[8] = 0.15f+0.07f*cos(PI*t*0.14323f);
     }
+
 
     glDeleteBuffers(1, &quadId);
     glDeleteVertexArrays(1, &vertexArrayId);

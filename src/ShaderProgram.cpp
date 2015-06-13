@@ -1,6 +1,10 @@
 #include "ShaderProgram.hpp"
 
 
+ShaderProgram::ShaderProgram(void) :
+    programId_(0)
+{}
+
 ShaderProgram::ShaderProgram(const std::vector<ShaderObject*>& shaders) :
     programId_(0)
 {
@@ -27,6 +31,12 @@ ShaderProgram::ShaderProgram(const std::vector<ShaderObject*>& shaders) :
 ShaderProgram::~ShaderProgram(void) {
     if (programId_ != 0)
         glDeleteProgram(programId_);
+}
+
+ShaderProgram& ShaderProgram::operator=(ShaderProgram&& other) {
+    programId_ = other.programId_;
+    other.programId_ = 0;
+    return *this;
 }
 
 GLuint ShaderProgram::getId(void) const {
