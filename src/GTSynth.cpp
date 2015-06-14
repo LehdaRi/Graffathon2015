@@ -53,6 +53,7 @@ GTSynth::GTSynth(int sampleRate) :
 	setInstrument(1, new GTSSawOsc(sampleRate));
 	setInstrument(2, new GTSTriOsc(sampleRate));
 	setInstrument(3, new GTSNoiseOsc(sampleRate));
+	setInstrument(4, new GTSSawOsc(sampleRate));
 	//static_cast<GTSSquareOsc*>(slots_[1])->setDuty(0.5);
 }
 
