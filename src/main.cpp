@@ -13,7 +13,9 @@
 #define WH  720
 
 
-#define METATIME 13.0f
+#define METATIME 10.0f
+#define LIFETIME 20.0f
+#define TORUSTIME 30.0f
 
 
 GLfloat quad[] {
@@ -32,7 +34,7 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 
-    std::default_random_engine rnd(715517);
+    std::default_random_engine rnd(0XDEADBEEF);
 
     Framebuffer fbFull(WW, WH);
     Framebuffer fb32(32, 32);
@@ -85,7 +87,7 @@ int main(void) {
 
             pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, imageBurn, pixelBurn);
         }
-        else if (t >= METATIME) {
+        else if (t >= METATIME && t < LIFETIME) {
             life.draw(quadId, fb32, ar);
         }
 
