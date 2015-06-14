@@ -36,6 +36,7 @@ public:
     void renderSongs();
     void setTempo(int tempo);
     GTSynth(const GTSynth&) = delete;
+    ~GTSynth();
 
 
 private:

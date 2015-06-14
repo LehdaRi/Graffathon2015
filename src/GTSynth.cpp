@@ -51,10 +51,8 @@ GTSynth::GTSynth(int sampleRate) :
 	}
 	setInstrument(0, new GTSSquareOsc(sampleRate));
 	setInstrument(1, new GTSSawOsc(sampleRate));
-	setInstrument(2, new GTSSquareOsc(sampleRate));
-	setInstrument(3, new GTSTriOsc(sampleRate));
-	setInstrument(4, new GTSNoiseOsc(sampleRate));
-	setInstrument(5, new GTSSquareOsc(sampleRate));
+	setInstrument(2, new GTSTriOsc(sampleRate));
+	setInstrument(3, new GTSNoiseOsc(sampleRate));
 	//static_cast<GTSSquareOsc*>(slots_[1])->setDuty(0.5);
 }
 
@@ -255,4 +253,11 @@ void GTSynth::setInstrument(int slot, GTSGenerator* instr) {
 void GTSynth::setTempo(int tempo) {
 	tempo_ = tempo;
 	//patLen_ = 15 / tempo * sampleRate_;
+}
+
+GTSynth::~GTSynth() {
+	delete slots_[0];
+	delete slots_[1];
+	delete slots_[2];
+	delete slots_[3];
 }
