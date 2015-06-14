@@ -35,7 +35,7 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 
-    std::default_random_engine rnd(0XDEADBEEF);
+    std::default_random_engine rnd(53546);
 
     Framebuffer fbFull(WW, WH);
     Framebuffer fb32(32, 32);

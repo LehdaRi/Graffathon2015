@@ -20,7 +20,7 @@ in vec4 pos;
 layout(location = 0) out vec4 color;
 
 uniform float aspectRatio;
-uniform vec4 ballPos[NBALLS]; //x-pos, y-pos, z-pos, size
+uniform float ballPos[NBALLS*5]; //x-pos, y-pos, z-pos, size, color
 uniform vec3 cameraPosition;
 uniform mat3 cameraOrientation;
 
@@ -31,16 +31,53 @@ const int maxSteps = 128;
 const float farPlane = 5.0;
 const float uEpsilon = 0.0001;
 
+vec3 hsv_to_rgb(float h, float s, float v)
+{
+	float c = v * s;
+	h = mod((h * 6.0), 6.0);
+	float x = c * (1.0 - abs(mod(h, 2.0) - 1.0));
+	vec3 color;
+
+	if (0.0 <= h && h < 1.0) {
+		color = vec3(c, x, 0.0);
+	} else if (1.0 <= h && h < 2.0) {
+		color = vec3(x, c, 0.0);
+	} else if (2.0 <= h && h < 3.0) {
+		color = vec3(0.0, c, x);
+	} else if (3.0 <= h && h < 4.0) {
+		color = vec3(0.0, x, c);
+	} else if (4.0 <= h && h < 5.0) {
+		color = vec3(x, 0.0, c);
+	} else if (5.0 <= h && h < 6.0) {
+		color = vec3(c, 0.0, x);
+	} else {
+		color = vec3(0.0, 0.0, 0.0);
+	}
+
+	color.rgb += v - c;
+
+	return color;
+}
+
 float dScene(vec3 p) {
     float f = 0.0f;
     for (int j=0; j<NBALLS; ++j) {
-        vec3 bp = ballPos[j].xyz;
-        f += ballPos[j].w / length(p-bp);
+        vec3 bp = vec3(ballPos[5*j], ballPos[5*j+1], ballPos[5*j+2]);
+        f += ballPos[5*j+3] / length(p-bp);
     }
     float d = (1.0/f)-1.0;
     //if (d<-0.1)
         //d = 0.1;
     return d;
+}
+
+vec3 dSceneCol(vec3 p) {
+    vec3 col = vec3(0.0);
+    for (int j=0; j<NBALLS; ++j) {
+        vec3 bp = vec3(ballPos[5*j], ballPos[5*j+1], ballPos[5*j+2]);
+        col += (ballPos[5*j+3] / length(p-bp))*hsv_to_rgb(ballPos[5*j+4], 1.0, 1.0);
+    }
+    return col;
 }
 
 vec3 getNormal(in vec3 pos) {
@@ -57,14 +94,14 @@ void main() {
     ray = normalize(ray);
     float dis = 1.0;
 
-    color = vec4(0.0, 0.0, 0.0, 1.0);
+    color = vec4(sin(ballPos[0]*2.56+pos.x*14.3)+cos(ballPos[5]*6.76+pos.y), cos(ballPos[1]+pos.y)+pos.z*0.3, sin(ballPos[2]+pos.z), 1.0);
 
     float t = 0.0;
     for (int i=0; i<maxSteps; ++i) {
         vec3 p = cameraPosition + ray*dis*t;
         float d = dScene(p);
         if (d < 0.01) {
-            color = vec4(0.2 + 0.8*clamp(dot(getNormal(p), vec3(0.0, 1.0, 0.0)), 0.0, 1.0), 0.0, 0.0, 1.0);
+            color = vec4((0.2 + 0.8*clamp(dot(getNormal(p), vec3(0.0, 1.0, 0.0)), 0.0, 1.0))*dSceneCol(p), 1.0);
             break;
         }
         t+=0.01f + 0.2f*d;
