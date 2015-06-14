@@ -12,6 +12,8 @@ GTSSquareOsc::GTSSquareOsc(int sampleRate) :
 
 void GTSSquareOsc::getChunk(std::vector<float>& buff) {
 	for(int n = 0; n < buff.size(); n++) {
+		//std::cout << "vol " << vol_ << std::endl;
+		stepEnv();
 		phase_ += phaseIncr_;
 		if(phase_ >= TWOPI)
 			phase_ = 0;

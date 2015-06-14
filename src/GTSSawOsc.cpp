@@ -13,6 +13,7 @@ GTSSawOsc::GTSSawOsc(int sampleRate) :
 
 void GTSSawOsc::getChunk(std::vector<float>& buff) {
 	for(int n = 0; n < buff.size(); n++) {
+		//std::cout << "vol " << vol_ << std::endl;
 		stepEnv();
 	    buff[n] = val_*vol_;
 	    val_ += ampInc_;

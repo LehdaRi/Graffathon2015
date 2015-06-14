@@ -12,6 +12,7 @@ GTSTriOsc::GTSTriOsc(int sampleRate) :
 void GTSTriOsc::getChunk(std::vector<float>& buff) {
 	float val;
 	for (int n = 0; n < buff.size(); ++n) {
+		stepEnv();
 	    val = phase_ * INVHALFPI;
 	    if(val < 0) {
 	        val += 1.0;
