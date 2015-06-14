@@ -16,6 +16,7 @@ public:
          const std::string& vsShadeFileName,
          const std::string& fsShadeFileName);
 
+	void drawBuffer(GLuint quaidId, Framebuffer& gameFb);
     void draw(GLuint quadId, Framebuffer& gameFb, float aspectRatio);
 
 private:

@@ -21,7 +21,7 @@ Life::Life(const std::string& vsGameFileName,
     uniformLoc_aspectRatio_ = glGetUniformLocation(shadeShader_.getId(), "aspectRatio");
 }
 
-void Life::draw(GLuint quadId, Framebuffer& gameFb, float aspectRatio) {
+void Life::drawBuffer(GLuint quadId, Framebuffer& gameFb) {
     gameFb.bind();
     glUseProgram(gameShader_.getId());
 
@@ -32,7 +32,9 @@ void Life::draw(GLuint quadId, Framebuffer& gameFb, float aspectRatio) {
     glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+}
 
+void Life::draw(GLuint quadId, Framebuffer& gameFb, float aspectRatio) {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, 1280, 720);
     glUseProgram(shadeShader_.getId());

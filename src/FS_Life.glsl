@@ -12,17 +12,17 @@
 
 #version 330 core
 
-varying vec2 UV;
+in vec2 UV;
 
 out vec4 color;
 
 uniform sampler2D gameTexture;
 
-const uint xSize = 32;
-const uint ySize = 32;
+const uint xSize = uint(32);
+const uint ySize = uint(32);
 
-const float xDis = 1.0/xSize;
-const float yDis = 1.0/ySize;
+const float xDis = 1.0/float(xSize);
+const float yDis = 1.0/float(ySize);
 
 void main() {
     int nnR = 0;

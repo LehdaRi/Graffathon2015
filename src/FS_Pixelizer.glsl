@@ -12,7 +12,7 @@
 
 #version 330 core
 
-varying vec2 UV;
+in vec2 UV;
 
 out vec4 color;
 
