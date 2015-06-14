@@ -14,9 +14,9 @@
 #define WH  720
 
 
-#define METATIME 10.0f
-#define LIFETIME 20.0f
-#define TORUSTIME 30.0f
+#define METATIME 20.0f
+#define LIFETIME 30.0f
+#define TORUSTIME 40.0f
 
 
 GLfloat quad[] {
@@ -30,9 +30,9 @@ GLfloat quad[] {
 
 
 int main(void) {
-    sf::Window window(sf::VideoMode(WW, WH), "GRAFFAAAAARGHGSOODAONHOMO");
+    sf::Window window(sf::VideoMode(WW, WH), "Graffathon 2015 - Team dagen efter");
     window.setActive();
-    window.setFramerateLimit(30);
+    window.setFramerateLimit(50);
     glewInit();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
