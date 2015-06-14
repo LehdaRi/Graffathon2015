@@ -8,6 +8,9 @@
 #include <GL/glew.h>
 #include <random>
 
+#include "GTSynth.hpp"
+#include "GTSAudio.hpp"
+
 
 #define PI  3.14159265359
 #define WW  1280
@@ -57,6 +60,15 @@ int main(void) {
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+
+    int sampleRate = 44100;
+	int bufferLength = 512;
+	GTSynth synth(sampleRate);
+	GTSAudio audioOut(synth, sampleRate, bufferLength);
+	synth.loadSong(0, 240, "res/darude.sng", "res/darude.pat");
+	synth.renderSongs();
+	synth.selectSong(0);
+	audioOut.play();
 
     //  Time
     double t = 0.0;

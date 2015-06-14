@@ -2,6 +2,7 @@
 #define GTSDUMMYGEN_HPP
 
 #include <vector>
+#include <cstdint>
 #include "GTSGenerator.hpp"
 
 
