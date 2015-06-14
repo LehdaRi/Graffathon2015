@@ -4,7 +4,7 @@
     FS_LifeShade.glsl
 
     @version    0.1
-    @author     Miika 'LehdaRi' Lehtimäki
+    @author     Miika 'PaskakoodaRi' Lehtimäki
     @date       2015-04-18
 
 **/
@@ -21,5 +21,5 @@ uniform float aspectRatio;
 
 void main() {
     vec2 UV_ = vec2(UV.x, (UV.y*2.0-1.0)/aspectRatio*.5+.5);
-    color = texture(frameTexture, UV_);
+    color = texture(shadeTexture, UV_);
 }
