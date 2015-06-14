@@ -45,7 +45,7 @@ int main(void) {
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
     Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
-	Torus torus(3.0f, 0.9f, 6, 6);
+	Torus torus(2.0f, 1.0f, 16, 16);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
