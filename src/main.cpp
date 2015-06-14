@@ -34,8 +34,11 @@ int main(void) {
     window.setActive();
     window.setFramerateLimit(30);
     glewInit();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
-    std::default_random_engine rnd(0XDEADBEEF);
+    std::default_random_engine rnd(71551);
 
     Framebuffer fbFull(WW, WH);
     Framebuffer fb32(32, 32);
@@ -94,7 +97,7 @@ int main(void) {
             life.draw(quadId, fb32, ar);
         }
 		else if (t >= LIFETIME) {
-			life.drawBuffer(quadId, fb32);
+			//life.drawBuffer(quadId, fb32);
 			torus.draw(fb32, t);
 		}
 

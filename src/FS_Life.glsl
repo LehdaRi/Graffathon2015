@@ -26,7 +26,7 @@ const float yDis = 1.0/float(ySize);
 
 void main() {
     int nnR = 0;
-    color = round(texture(gameTexture, UV));
+    color = round(vec4(texture(gameTexture, UV).xyz, 1.0f));
 
     for (int i=-1; i<2; ++i) {
         for (int j=-1; j<2; ++j) {
