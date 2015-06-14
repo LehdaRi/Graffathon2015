@@ -45,7 +45,7 @@ int main(void) {
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
     Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
-	Torus torus(2.0f, 1.0f, 16, 16);
+	Torus torus(6.0f, 3.0f, 6, 6);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -81,7 +81,6 @@ int main(void) {
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, WW, WH);
-            pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, 0.0f, 0.0f);
 
             float imageBurn = (t-METATIME+8.0f)*0.25f;
             if (imageBurn < 0.0f) imageBurn = 0.0f;

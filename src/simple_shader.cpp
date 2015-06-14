@@ -6,7 +6,7 @@ namespace GL
 {
 ShaderProgram ShaderProgram::simple(void) {
 	return GL::ShaderProgram(
-		"#version 330\n"
+		"#version 330 core\n"
 		GL_SHADER_SOURCE(
 			layout(location = 0) in vec3 aPosition;
 			layout(location = 1) in vec3 aNormal;
@@ -30,7 +30,7 @@ ShaderProgram ShaderProgram::simple(void) {
 				gl_Position = uModelToClip * vec4(aPosition, 1.0);
 			}
 		),
-		"#version 330\n"
+		"#version 330 core\n"
 		GL_SHADER_SOURCE(
 			in vec3 vColor;
 			in vec3 vNormal;

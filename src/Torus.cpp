@@ -15,7 +15,9 @@ void Torus::draw(Framebuffer& gameFb, float time) {
 	glViewport(0, 0, width, height);
 
 	// Camera.
-	Eigen::Vector3f eye					= Eigen::Vector3f(4 * std::sin(time), 2, 4 * std::cos(time));
+	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(20.0f),
+														  2.0 * std::sin(0.6 * (20.0f - 20.0f)),
+														  10 * std::cos(20.0f));
 	Eigen::Matrix4f view				= GLUtils::look_at(eye);
 	Eigen::Matrix4f projection			= GLUtils::perspective(width, height, PI / 2);
 
