@@ -8,6 +8,7 @@
 #include <random>
 #include <string>
 #include <GL/glew.h>
+#include <Eigen/Dense>
 
 
 #define NBALLS 8
@@ -34,11 +35,17 @@ private:
 
     float ballData[NBALLS*4];
 
+    Eigen::Matrix3f cameraView_;
+
     ShaderProgram shader_;
     GLint uniformLoc_aspectRatio_;
     GLint uniformLoc_ballPos_;
+    GLint uniformLoc_cameraPos_;
 
     void generateBallData(float time);
+    void cameraLookAt(const Eigen::Vector3f& from,
+                      const Eigen::Vector3f& to,
+                      const Eigen::Vector3f& up);
 };
 
 

@@ -8,7 +8,8 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
                      const std::string& vsFileName,
                      const std::string& fsFileName) :
     uniformLoc_aspectRatio_(-1),
-    uniformLoc_ballPos_(-1)
+    uniformLoc_ballPos_(-1),
+    uniformLoc_cameraPos_(-1)
 {
     double rn = 1.0/(double)rnd.max();
     for (auto i=0; i<NBALLS; ++i) {
@@ -63,4 +64,14 @@ void Metaballs::generateBallData(float time) {
         ballData[4*i+2] = ballParams[i].zTrans + ballParams[i].zAmp*sinf(ballParams[i].zSpeed*time + ballParams[i].zPhase);
         ballData[4*i+3] = ballParams[i].sizeTrans + ballParams[i].sizeAmp*sinf(ballParams[i].sizeSpeed*time + ballParams[i].sizePhase);
     }
+}
+
+void Metaballs::cameraLookAt(const Eigen::Vector3f& from,
+                             const Eigen::Vector3f& to,
+                             const Eigen::Vector3f& up) {
+    Eigen::Vector3f forward = (to-from).normalized();
+    Eigen::Vector3f right = forward.cross(up).normalized();
+    Eigen::Vector3f upn = right.cross(forward).normalized();
+
+    cameraView_ = (Eigen::Matrix3f() << forward, right, upn).finished();
 }
