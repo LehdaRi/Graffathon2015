@@ -1,0 +1,30 @@
+f = float
+c = char
+d = int
+
+Pattern
+-------
+
+#Declaration step
+
+    #1
+     d
+
+%Settings step
+
+    % A R / A R / A R / A R / A R / A R / A R / A R
+      f f   f f   f f   f f   f f   f f   f f   f f
+
+Note step
+
+    c0 c1 c2 c3 c4 c5 c6 c7
+    cd cd cd cd cd cd cd cd
+
+    00 = note off (start release)
+    11 = don't interrupt note
+
+Song
+----
+
+    1 2 3 4 5 6 7 8
+    d d d d d d d d
