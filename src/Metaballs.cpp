@@ -28,8 +28,8 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
         ballParams[i].zAmp = rnd()*rn*1.0f;
         ballParams[i].sizeSpeed = 0.1f+rnd()*rn*0.9f;
         ballParams[i].sizePhase = rnd()*rn*PI*2.0f;
-        ballParams[i].sizeTrans = 0.042f+rnd()*rn*0.021f;
-        ballParams[i].sizeAmp = 0.015f+rnd()*rn*0.015f;
+        ballParams[i].sizeTrans = 0.075f+rnd()*rn*0.03f;
+        ballParams[i].sizeAmp = 0.035f+rnd()*rn*0.025f;
         /*ballParams[i].colorSpeed = 0.1f+rnd()*rn*0.9f;
         ballParams[i].colorPhase = rnd()*rn*PI*2.0f;
         ballParams[i].colorTrans = 0.042f+rnd()*rn*0.021f;

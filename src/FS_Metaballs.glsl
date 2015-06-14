@@ -35,11 +35,11 @@ float dScene(vec3 p) {
     float f = 0.0f;
     for (int j=0; j<NBALLS; ++j) {
         vec3 bp = ballPos[j].xyz;
-        f += 2*ballPos[j].w / length(p-bp);
+        f += ballPos[j].w / length(p-bp);
     }
     float d = (1.0/f)-1.0;
-    if (d<0.0)
-        d = 0.0;
+    //if (d<-0.1)
+        //d = 0.1;
     return d;
 }
 
@@ -67,7 +67,7 @@ void main() {
             color = vec4(0.2 + 0.8*clamp(dot(getNormal(p), vec3(0.0, 1.0, 0.0)), 0.0, 1.0), 0.0, 0.0, 1.0);
             break;
         }
-        t+=0.1*d;
+        t+=0.01f + 0.2f*d;
         if (t>farPlane)
             break;
     }

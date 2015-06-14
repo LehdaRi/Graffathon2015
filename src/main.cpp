@@ -13,7 +13,7 @@
 #define WH  720
 
 
-#define METATIME 10.0f
+#define METATIME 13.0f
 
 
 GLfloat quad[] {
@@ -67,7 +67,7 @@ int main(void) {
             window.close();
         }
 
-        //if (t < METATIME) {
+        if (t < METATIME) {
             glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
             mb.draw(quadId, fbFull, t, ar);
             mb.draw(quadId, fb32, t, 1.0f);
@@ -75,8 +75,8 @@ int main(void) {
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
             glViewport(0, 0, WW, WH);
             pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, 0.0f, 0.0f);
-/*
-            float imageBurn = (t-METATIME+5.0f)*0.25f;
+
+            float imageBurn = (t-METATIME+8.0f)*0.25f;
             if (imageBurn < 0.0f) imageBurn = 0.0f;
             if (imageBurn > 1.0f) imageBurn = 1.0f;
             float pixelBurn = t-METATIME+1.0f;
@@ -88,7 +88,7 @@ int main(void) {
         else if (t >= METATIME) {
             life.draw(quadId, fb32, ar);
         }
-*/
+
         window.display();
 
         t += 0.0333333333;
