@@ -9,17 +9,15 @@ Torus::Torus(float majorRadius, float minorRadius, size_t majorSteps, size_t min
 void Torus::draw(Framebuffer& gameFb, float time) {
 	GLint old_fbo; glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int width = 1280; int height = 720;
 	glViewport(0, 0, width, height);
 
 	// Camera.
-	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(20.0f),
-														  2.0 * std::sin(0.6 * (20.0f - 20.0f)),
-														  10 * std::cos(20.0f));
+	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(time),
+														  2.0 * std::sin(0.6 * (time - 20.0f)),
+														  10 * std::cos(time));
 	Eigen::Matrix4f view				= GLUtils::look_at(eye);
 	Eigen::Matrix4f projection			= GLUtils::perspective(width, height, PI / 2);
 
@@ -49,9 +47,10 @@ void Torus::draw(Framebuffer& gameFb, float time) {
 	GLint old_tex; glGetIntegerv(GL_TEXTURE_BINDING_2D, &old_tex);
 	glBindTexture(GL_TEXTURE_2D, gameFb.getTextureId());
 
+	GLint old_vao; glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &old_vao);
 	glBindVertexArray(torus_.vao_);
 	glDrawArrays(torus_.primitive_type_, 0, torus_.num_vertices_);
-	glBindVertexArray(0);
+	glBindVertexArray(old_vao);
 
 	glBindTexture(GL_TEXTURE_2D, old_tex);
 	glActiveTexture(old_active);
