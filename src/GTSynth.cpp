@@ -64,13 +64,11 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 	if(!sf || !pf) {
 		return -1;
 	}
-	std::cout << "files open" << std::endl;
 	char line[50];
 	std::vector<std::vector<std::vector<Cmd>>> pats;
 	int instrNo = 0;
 	while(fgets(line, 50, pf)) {
 		std::string linestd(line);
-		std::cout << linestd << std::endl;
 		if(line[0] == '#') {
 			std::vector<Cmd> new_pat;
 			sscanf(line, "# %d\n", &instrNo);
@@ -79,20 +77,15 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 				pats.push_back(instrPats);
 			}
 			pats[instrNo].push_back(std::move(new_pat));
-			std::cout << "new pat" << std::endl;
 		} else if(line[0] != '/') {
 			Cmd new_cmd;
 			if(line[0] == '%') {
-				std::cout << "envs" << std::endl;
 				new_cmd.oct = -1;
 				sscanf(line, "%% %f %f\n", &new_cmd.a, &new_cmd.r);
 			} else if(line[0] == '!') {
-				std::cout << "vol" << std::endl;
 				new_cmd.oct = -2;
 				sscanf(line, "! %f\n", &new_cmd.vol);
-				std::cout << new_cmd.vol << std::endl;
 			} else {
-				std::cout << "notes" << std::endl;
 				sscanf(line, "%d %d\n", &new_cmd.note, &new_cmd.oct);
 			}
 			pats[instrNo].back().push_back(new_cmd);
@@ -109,21 +102,11 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 	}
 	fclose(sf);
 	fclose(pf);
+	/*
 	for(auto& instr : pats) {
 		for(auto& pat : instr) {
 			for(auto& cmd : pat) {
 				std::cout << cmd.oct << std::endl;
-				/*if(cmd.oct == -1) {
-					std::cout << "env " << std::endl;
-					std::cout << cmd.a << " " << cmd.r << std::endl;
-				} else if(cmd.oct == -2) {
-					std::cout << "vol " << std::endl;
-					std::cout << cmd.vol << std::endl;
-				} else {
-					std::cout << "note " << std::endl;
-					std::cout << cmd.note << std::endl;
-					std::cout << cmd.oct << std::endl;
-				}*/
 			}
 		}
 	}
@@ -133,6 +116,7 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 			std::cout << pat << std::endl;
 		}
 	}
+	*/
 	pats_.push_back(pats);
 	songs_.push_back(song);
 	tempos_.push_back(tempo);
@@ -153,7 +137,6 @@ void GTSynth::renderSongs() {
 	for(int i = 0; i < songs_.size(); ++i) {
 		std::vector<int16_t> new_song;
 		int stepLen = 15.0 / tempos_[i] * sampleRate_;
-		std::cout << tempos_[i] << " " << sampleRate_ << " " << stepLen << std::endl;
 		// Song line
 		for(int j = 0; j < songs_[i].size(); j++) {
 			std::vector<int>& songLine = songs_[i][j];
@@ -215,9 +198,10 @@ void GTSynth::renderSongs() {
 				}
 				std::copy(converted.begin(), converted.end(), std::back_inserter(new_song));
 			}
-			std::cout << "line_end" << std::endl;
+			//std::cout << "line_end" << std::endl;
 		}
-		std::cout << new_song.size() << std::endl;
+		std::cout << "Song size: " << new_song.size() << " samples" << std::endl;
+		std::cout << "Song length: " << (float)new_song.size()/(float)sampleRate_ << " s" << std::endl;
 		renderedSongs_.push_back(new_song);
 	}
 }
