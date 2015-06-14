@@ -43,7 +43,7 @@ int main(void) {
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
     Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
-	Torus torus(6.0f, 3.0f, 6, 6);
+	Torus torus(6.0f, 3.0f, 14, 6);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -59,7 +59,7 @@ int main(void) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     //  Time
-    double t = 8.0;
+    double t = 0.0;
     const float ar = (float)WW/(float)WH;
 
     while (window.isOpen()) {

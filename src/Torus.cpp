@@ -11,15 +11,20 @@ void Torus::draw(Framebuffer& gameFb, float time) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glClearColor(0.15, 0.1, 0.1, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int width = 1280; int height = 720;
 	glViewport(0, 0, width, height);
 
+	//time = 20.0f;
 	// Camera.
-	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(20.0f),
-														  2.0 * std::sin(0.6 * (20.0f - 20.0f)),
-														  10 * std::cos(20.0f));
+	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(time),
+														  4.0 * std::sin(0.6 * (time - 20.0f)),
+														  10 * std::cos(time));
+	Eigen::Vector3f eyenorm = eye.normalized() * 3.0f
+											   * (1.0f + std::sin(-PI/2 + 0.3 * (time - 20.0f)));
+	eye += eyenorm;
 	Eigen::Matrix4f view				= GLUtils::look_at(eye);
 	Eigen::Matrix4f projection			= GLUtils::perspective(width, height, PI / 2);
 
