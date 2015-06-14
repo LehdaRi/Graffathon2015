@@ -29,18 +29,21 @@ private:
         float ySpeed, yPhase, yTrans, yAmp;
         float zSpeed, zPhase, zTrans, zAmp;
         float sizeSpeed, sizePhase, sizeTrans, sizeAmp;
+        //float colorSpeed, colorPhase, colorTrans, colorAmp;
     };
 
     BallParams ballParams[NBALLS];
 
     float ballData[NBALLS*4];
 
+    Eigen::Vector3f cameraPos_;
     Eigen::Matrix3f cameraView_;
 
     ShaderProgram shader_;
     GLint uniformLoc_aspectRatio_;
     GLint uniformLoc_ballPos_;
-    GLint uniformLoc_cameraPos_;
+    GLint uniformLoc_cameraPosition_;
+    GLint uniformLoc_cameraOrientation_;
 
     void generateBallData(float time);
     void cameraLookAt(const Eigen::Vector3f& from,

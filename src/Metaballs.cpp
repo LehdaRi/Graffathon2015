@@ -9,7 +9,8 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
                      const std::string& fsFileName) :
     uniformLoc_aspectRatio_(-1),
     uniformLoc_ballPos_(-1),
-    uniformLoc_cameraPos_(-1)
+    uniformLoc_cameraPosition_(-1),
+    uniformLoc_cameraOrientation_(-1)
 {
     double rn = 1.0/(double)rnd.max();
     for (auto i=0; i<NBALLS; ++i) {
@@ -29,6 +30,10 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
         ballParams[i].sizePhase = rnd()*rn*PI*2.0f;
         ballParams[i].sizeTrans = 0.042f+rnd()*rn*0.021f;
         ballParams[i].sizeAmp = 0.015f+rnd()*rn*0.015f;
+        /*ballParams[i].colorSpeed = 0.1f+rnd()*rn*0.9f;
+        ballParams[i].colorPhase = rnd()*rn*PI*2.0f;
+        ballParams[i].colorTrans = 0.042f+rnd()*rn*0.021f;
+        ballParams[i].colorAmp = 0.015f+rnd()*rn*0.015f;*/
     }
 
     ShaderObject vs(vsFileName, GL_VERTEX_SHADER);
@@ -36,6 +41,12 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
     shader_ = std::move(ShaderProgram( { &vs, &fs } ));
     uniformLoc_aspectRatio_ = glGetUniformLocation(shader_.getId(), "aspectRatio");
     uniformLoc_ballPos_ = glGetUniformLocation(shader_.getId(), "ballPos");
+    uniformLoc_cameraPosition_ = glGetUniformLocation(shader_.getId(), "cameraPosition");
+    uniformLoc_cameraOrientation_ = glGetUniformLocation(shader_.getId(), "cameraOrientation");
+
+    cameraLookAt(Eigen::Vector3f(2.0f, 0.5f, 2.0f),
+                 Eigen::Vector3f(0.0f, 0.0f, 0.0f),
+                 Eigen::Vector3f(0.0f, 1.0f, 0.0f));
 }
 
 void Metaballs::draw(GLuint quadId, float time, float aspectRatio) {
@@ -45,6 +56,8 @@ void Metaballs::draw(GLuint quadId, float time, float aspectRatio) {
 
     glUniform1f(uniformLoc_aspectRatio_, aspectRatio);
     glUniform4fv(uniformLoc_ballPos_, NBALLS*4, ballData);
+    glUniform3fv(uniformLoc_cameraPosition_, 1, cameraPos_.data());
+    glUniformMatrix3fv(uniformLoc_cameraOrientation_, 1, GL_FALSE, cameraView_.data());
 
     glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
@@ -74,4 +87,5 @@ void Metaballs::cameraLookAt(const Eigen::Vector3f& from,
     Eigen::Vector3f upn = right.cross(forward).normalized();
 
     cameraView_ = (Eigen::Matrix3f() << forward, right, upn).finished();
+    cameraPos_ = from;
 }
