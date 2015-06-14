@@ -3,14 +3,9 @@
 
 
 #include "ShaderProgram.hpp"
-#include "Framebuffer.hpp"
 
-#include <random>
 #include <string>
 #include <GL/glew.h>
-
-
-#define NBALLS 8
 
 
 class Pixelizer {
@@ -19,12 +14,17 @@ public:
               const std::string& fsFileName);
 
     void draw(GLuint quadId, float time, float aspectRatio,
-              GLuint frameTexture);
+              GLuint frameTexture, unsigned xDivs, unsigned yDivs,
+              float imageBurn, float pixelBurn);
 
 private:
     ShaderProgram shader_;
     GLint uniformLoc_frameTexture_;
     GLint uniformLoc_aspectRatio_;
+    GLint uniformLoc_imageBurn_;
+    GLint uniformLoc_pixelBurn_;
+    GLint uniformLoc_xDivs_;
+    GLint uniformLoc_yDivs_;
 };
 
 

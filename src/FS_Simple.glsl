@@ -8,7 +8,7 @@
 
 #version 330 core
 
-varying vec4 pos;
+in vec4 pos;
 
 out vec4 color;
 

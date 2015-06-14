@@ -11,6 +11,9 @@ public:
     ~Framebuffer(void);
 
     void bind(void);
+
+    GLuint getWidth(void) const;
+    GLuint getHeight(void) const;
     GLuint getTextureId(void) const;
 
 private:
