@@ -14,6 +14,7 @@ void Torus::draw(Framebuffer& gameFb, float time) {
 	int width = 1280; int height = 720;
 	glViewport(0, 0, width, height);
 
+	time = 20.0f;
 	// Camera.
 	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(time),
 														  2.0 * std::sin(0.6 * (time - 20.0f)),

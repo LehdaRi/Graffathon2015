@@ -35,15 +35,17 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
-    std::default_random_engine rnd(53236);
+    std::default_random_engine rnd(71551);
 
     Framebuffer fbFull(WW, WH);
     Framebuffer fb32(32, 32);
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
     Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
-	Torus torus(6.0f, 3.0f, 6, 6);
+	Torus torus(6.0f, 3.0f, 14, 6);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);

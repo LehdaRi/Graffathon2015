@@ -327,9 +327,9 @@ Mesh Mesh::torus(float major_radius, float minor_radius, size_t major_steps, siz
 	std::vector<Vector3f> vertices;
 	for (size_t i = 0; i < major_steps; ++i) {
 		float major_angle = i * major_angle_incr;
-		Vector3f major_dir = Vector3f(cosf(PI/2 + major_angle - 0.5 * major_angle_incr),
+		Vector3f major_dir = Vector3f(cosf(3 * PI/2 + major_angle - 0.70 * major_angle_incr),
 									  0.0f,
-									  sinf(PI/2 + major_angle - 0.5 * major_angle_incr));
+									  sinf(3 * PI/2 + major_angle - 0.70 * major_angle_incr));
 		Vector3f center = major_radius * major_dir;
 
 		for (size_t j = 0; j < minor_steps; ++j) {
