@@ -2,6 +2,7 @@
 #include "Metaballs.hpp"
 #include "Pixelizer.hpp"
 #include "Life.hpp"
+#include "Torus.hpp"
 
 #include <SFML/Graphics.hpp>
 #include <GL/glew.h>
@@ -41,6 +42,7 @@ int main(void) {
     Metaballs mb(rnd, "src/VS_Metaballs.glsl", "src/FS_Metaballs.glsl");
     Pixelizer pixelizer("src/VS_Pixelizer.glsl", "src/FS_Pixelizer.glsl");
     Life life("src/VS_Life.glsl", "src/FS_Life.glsl", "src/VS_LifeShade.glsl", "src/FS_LifeShade.glsl");
+	Torus torus(3.0f, 0.9f, 6, 6);
 
     GLuint vertexArrayId;
     glGenVertexArrays(1, &vertexArrayId);
@@ -87,8 +89,13 @@ int main(void) {
             pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, imageBurn, pixelBurn);
         }
         else if (t >= METATIME && t < LIFETIME) {
+			life.drawBuffer(quadId, fb32);
             life.draw(quadId, fb32, ar);
         }
+		else if (t >= LIFETIME) {
+			life.drawBuffer(quadId, fb32);
+			torus.draw(fb32, t);
+		}
 
         window.display();
 
