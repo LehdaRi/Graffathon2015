@@ -48,11 +48,11 @@ GTSynth::GTSynth(int sampleRate) :
 			notes_[o][n] = middleNotes[n] / std::pow(2, 4-o);
 		}
 	}
-	//setInstrument(0, new GTSSquareOsc(sampleRate));
+	setInstrument(0, new GTSSquareOsc(sampleRate));
 	setInstrument(0, new GTSSawOsc(sampleRate));
 	setInstrument(1, new GTSSquareOsc(sampleRate));
 	setInstrument(2, new GTSSquareOsc(sampleRate));
-	static_cast<GTSSquareOsc*>(slots_[1])->setDuty(0.5);
+	//static_cast<GTSSquareOsc*>(slots_[1])->setDuty(0.5);
 }
 
 
@@ -78,7 +78,7 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 			}
 			pats[instrNo].push_back(std::move(new_pat));
 			std::cout << "new pat" << std::endl;
-		} else {
+		} else if(line[0] != '/') {
 			Cmd new_cmd;
 			if(line[0] == '%') {
 				std::cout << "envs" << std::endl;
@@ -98,10 +98,12 @@ int GTSynth::loadSong(int id, int tempo, std::string songFile, std::string patFi
 	}
 	std::vector<std::vector<int>> song;
 	while(fgets(line, 50, sf)) {
-		std::vector<int> bar(8);
-		sscanf(line, "%d %d %d %d %d %d %d %d\n",
-				&bar[0], &bar[1], &bar[2], &bar[3], &bar[4], &bar[5], &bar[6], &bar[7]);
-		song.push_back(std::move(bar));
+		if(line[0] != '/') {
+			std::vector<int> bar(8);
+			sscanf(line, "%d %d %d %d %d %d %d %d\n",
+					&bar[0], &bar[1], &bar[2], &bar[3], &bar[4], &bar[5], &bar[6], &bar[7]);
+			song.push_back(std::move(bar));
+		}
 	}
 	fclose(sf);
 	fclose(pf);
@@ -160,36 +162,48 @@ void GTSynth::renderSongs() {
 				std::vector<float> mix(stepLen, 0);
 				for(int s = 0; s < 8; s++) {
 					if(slots_[s]) {
-						Cmd step = pats_[i][s][songLine[s]][k+offsets[s]];
-						//std::cout << "off " << offsets[s] << " i " << i << " j " << j << " s " << s << " k " << k << std::endl;
-						//std::cout << k+offsets[s] << std::endl;
-						while(step.oct < 0) {
-							//std::cout << step.oct << std::endl;
-							if(step.oct == -1) {
-								//std::cout << "env" << std::endl;
-								slots_[s]->setEnv(step.a, step.r);
-								offsets[s] += 1;
-								//std::cout << "inc" << std::endl;
-								step = pats_[i][s][songLine[s]][k+offsets[s]];
-							} else if(step.oct == -2) {
-								//std::cout << "vol" << std::endl;
-								slots_[s]->setVol(step.vol);
-								offsets[s] += 1;
-								//std::cout << "inc" << std::endl;
-								step = pats_[i][s][songLine[s]][k+offsets[s]];
+						int currPat = songLine[s]-1;
+						if(songLine[s] == 0) {
+							slots_[s]->on(false);
+						} else {
+							if(currPat < 0) {
+								currPat = 0;
 							}
-						}
-						//std::cout << step.oct << std::endl;
-						//std::cout << "note" << std::endl;
-						slots_[s]->setFreq(notes_[step.oct][step.note]);
-						slots_[s]->on(true);
-						std::vector<float> chunk(stepLen);
-						slots_[s]->getChunk(chunk);
-						for(int n = 0; n < stepLen; ++n) {
-							//std::cout << mix[n] << " -> ";
-							mix[n] += chunk[n];
-							//std::cout << mix[n] << std::endl;
-							//std::cout << mix[n] << std::endl;
+							Cmd step = pats_[i][s][currPat][k+offsets[s]];
+							//std::cout << "off " << offsets[s] << " i " << i << " j " << j << " s " << s << " k " << k << std::endl;
+							//std::cout << k+offsets[s] << std::endl;
+							while(step.oct < 0) {
+								//std::cout << step.oct << std::endl;
+								if(step.oct == -1) {
+									//std::cout << "env" << std::endl;
+									slots_[s]->setEnv(step.a, step.r);
+									offsets[s] += 1;
+									//std::cout << "inc" << std::endl;
+									step = pats_[i][s][currPat][k+offsets[s]];
+								} else if(step.oct == -2) {
+									//std::cout << "vol" << std::endl;
+									slots_[s]->setVol(step.vol);
+									offsets[s] += 1;
+									//std::cout << "inc" << std::endl;
+									step = pats_[i][s][currPat][k+offsets[s]];
+								}
+							}
+							if(step.note == -1) {
+								slots_[s]->on(false);
+							} else if(step.note != -2) {
+								//std::cout << step.oct << std::endl;
+								//std::cout << "note" << std::endl;
+								slots_[s]->setFreq(notes_[step.oct][step.note]);
+								slots_[s]->on(true);
+							}
+							std::vector<float> chunk(stepLen);
+							slots_[s]->getChunk(chunk);
+							for(int n = 0; n < stepLen; ++n) {
+								//std::cout << mix[n] << " -> ";
+								mix[n] += chunk[n];
+								//std::cout << mix[n] << std::endl;
+								//std::cout << mix[n] << std::endl;
+							}
 						}
 					}
 				}
