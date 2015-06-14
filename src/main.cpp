@@ -18,9 +18,8 @@
 
 
 #define METATIME 20.0f
-#define LIFETIME 30.0f
-#define TORUSTIME 40.0f
-
+#define LIFETIME 40.0f
+#define KILLTIME 60.0f
 
 GLfloat quad[] {
     -1.0f, -1.0f, 0.0f,
@@ -33,7 +32,7 @@ GLfloat quad[] {
 
 
 int main(void) {
-    sf::Window window(sf::VideoMode(WW, WH), "Graffathon 2015 - Team dagen efter");
+    sf::Window window(sf::VideoMode(WW, WH), "Graffathon 2015 - Team dagen efter", sf::Style::Fullscreen);
     window.setActive();
     window.setFramerateLimit(50);
     glewInit();
@@ -102,15 +101,18 @@ int main(void) {
 			life.drawBuffer(quadId, fb32, vertexArrayId);
             life.draw(quadId, fb32, ar);
         }
-		else if (t >= LIFETIME) {
+		else if (t >= LIFETIME && t < KILLTIME) {
 			life.drawBuffer(quadId, fb32, vertexArrayId);
             //life.draw(quadId, fb32, ar);
 			torus.draw(fb32, t);
 		}
+		else {
+			return 0;
+		}
 
         window.display();
 
-        t += 0.0333333333;
+        t += 0.025;
     }
 
 

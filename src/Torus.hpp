@@ -1,7 +1,7 @@
 #ifndef TORUS_HPP
 #define TORUS_HPP
 
-#define START_TIME 30.0F
+#define START_TIME 40.0F
 
 #include "Mesh.h"
 #include "Framebuffer.hpp"
