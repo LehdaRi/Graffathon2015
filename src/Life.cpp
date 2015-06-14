@@ -1,5 +1,5 @@
 #include "Life.hpp"
-
+#include <iostream>
 
 Life::Life(const std::string& vsGameFileName,
            const std::string& fsGameFileName,
@@ -28,12 +28,14 @@ Life::Life(const std::string& vsGameFileName,
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
-void Life::drawBuffer(GLuint quadId, Framebuffer& gameFb) {
+void Life::drawBuffer(GLuint quadId, Framebuffer& gameFb, GLuint vertexArrayId) {
     gameFb.bind();
     glBindTexture(GL_TEXTURE_2D, gameTextureCopy_);
     glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, 32, 32);
 
+    glClearColor(1.0, 1.0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
 
     glUseProgram(gameShader_.getId());
 
@@ -41,10 +43,12 @@ void Life::drawBuffer(GLuint quadId, Framebuffer& gameFb) {
     glBindTexture(GL_TEXTURE_2D, gameTextureCopy_);
     glUniform1i(uniformLoc_gameTexture_, 0);
 
+    glBindVertexArray(vertexArrayId);
+
+
     glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
     glDrawArrays(GL_TRIANGLES, 0, 6);
-
 }
 
 void Life::draw(GLuint quadId, Framebuffer& gameFb, float aspectRatio) {

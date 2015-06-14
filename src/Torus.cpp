@@ -9,6 +9,8 @@ Torus::Torus(float majorRadius, float minorRadius, size_t majorSteps, size_t min
 void Torus::draw(Framebuffer& gameFb, float time) {
 	GLint old_fbo; glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int width = 1280; int height = 720;

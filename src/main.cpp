@@ -35,8 +35,6 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	//glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
 
     std::default_random_engine rnd(53236);
 
@@ -61,7 +59,7 @@ int main(void) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
     //  Time
-    double t = 0.0;
+    double t = 8.0;
     const float ar = (float)WW/(float)WH;
 
     while (window.isOpen()) {
@@ -89,11 +87,11 @@ int main(void) {
             pixelizer.draw(quadId, t, ar, fbFull.getTextureId(), 32, 18, imageBurn, pixelBurn);
         }
         else if (t >= METATIME && t < LIFETIME) {
-			life.drawBuffer(quadId, fb32);
+			life.drawBuffer(quadId, fb32, vertexArrayId);
             life.draw(quadId, fb32, ar);
         }
 		else if (t >= LIFETIME) {
-			life.drawBuffer(quadId, fb32);
+			life.drawBuffer(quadId, fb32, vertexArrayId);
             //life.draw(quadId, fb32, ar);
 			torus.draw(fb32, t);
 		}

@@ -1,6 +1,7 @@
 #include "Framebuffer.hpp"
 
 #include <cstdio>
+#include <iostream>
 
 
 Framebuffer::Framebuffer(GLuint width, GLuint height) :
@@ -41,7 +42,9 @@ Framebuffer::~Framebuffer(void) {
 
 void Framebuffer::bind(void) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+    GLenum drawBuffers[1] = { GL_COLOR_ATTACHMENT0 };
     glDrawBuffers(1, drawBuffers);
+
     glViewport(0, 0, width_, height_);
 }
 
