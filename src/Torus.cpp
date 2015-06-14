@@ -19,18 +19,18 @@ void Torus::draw(Framebuffer& gameFb, float time) {
 
 	//time = 20.0f;
 	// Camera.
-	Eigen::Vector3f up = std::cos(0.8 * (time - 20.0f))
+	Eigen::Vector3f up = std::cos(0.8 * (time - START_TIME))
 		* Eigen::Vector3f(0.0f, 1.0f, 0.0f)
-		+ std::sin(0.8 * (time - 20.0f))
+		+ std::sin(0.8 * (time - START_TIME))
 		* Eigen::Vector3f(1.0f, 0.0f, 0.0f);
 
 	Eigen::Vector3f origin(0.0f, 0.0f, 0.0f);
 
 	Eigen::Vector3f eye					= Eigen::Vector3f(10 * std::sin(time),
-														  4.0 * std::sin(0.6 * (time - 20.0f)),
+														  4.0 * std::sin(0.6 * (time - START_TIME)),
 														  10 * std::cos(time));
 	Eigen::Vector3f eyenorm = eye.normalized() * 3.0f
-											   * (1.0f + std::sin(-PI/2 + 0.3 * (time - 20.0f)));
+											   * (1.0f + std::sin(-PI/2 + 0.3 * (time - START_TIME)));
 	eye += eyenorm;
 	Eigen::Matrix4f view				= GLUtils::look_at(eye, origin, up);
 	Eigen::Matrix4f projection			= GLUtils::perspective(width, height, PI / 2, 0.1f, 50.0f);
