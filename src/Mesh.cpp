@@ -96,7 +96,7 @@ Mesh Mesh::from_obj(const char* filename) {
 	std::vector<unsigned> position_indices;
 	std::vector<unsigned> normal_indices;
 	std::vector<unsigned> texcoord_indices;
-	
+
 	while (fscanf(file, "%31s", type) != EOF) {
 		++current_line;
 		read_successful = true;
@@ -321,11 +321,7 @@ Mesh Mesh::cube(void) {
 Mesh Mesh::torus(float major_radius, float minor_radius, size_t major_steps, size_t minor_steps) {
 	Mesh mesh;
 
-	std::vector<Vector3f>& position_buffer_data = mesh.positions_;
-	std::vector<Vector3f>& normal_buffer_data = mesh.normals_;
-	std::vector<Vector2f>& texcoord_buffer_data = mesh.texcoords_;
-
-	float major_angle_incr = 2 * PI / major_steps;
+    float major_angle_incr = 2 * PI / major_steps;
 	float minor_angle_incr = 2 * PI / minor_steps;
 
 	std::vector<Vector3f> vertices;
@@ -422,7 +418,7 @@ Mesh Mesh::torus(float major_radius, float minor_radius, size_t major_steps, siz
 		Vector3f& e = vertices[(j + 1)];
 		Vector3f& f = vertices[j];
 
-		Vector3f& n = (b - a).cross(c - a);
+		const Vector3f& n = (b - a).cross(c - a);
 
 		mesh.positions_.push_back(a);
 		mesh.texcoords_.emplace_back(1.0f, 0.0f);
@@ -456,7 +452,7 @@ Mesh Mesh::torus(float major_radius, float minor_radius, size_t major_steps, siz
 	Vector3f& e = vertices[0];
 	Vector3f& f = vertices[-1 + minor_steps];
 
-	Vector3f& n = (b - a).cross(c - a);
+	const Vector3f& n = (b - a).cross(c - a);
 
 	mesh.positions_.push_back(a);
 	mesh.texcoords_.emplace_back(1.0f, 0.0f);
