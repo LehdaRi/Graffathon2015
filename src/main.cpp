@@ -35,10 +35,10 @@ int main(void) {
     window.setFramerateLimit(30);
     glewInit();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_CULL_FACE);
 
-    std::default_random_engine rnd(71551);
+    std::default_random_engine rnd(53236);
 
     Framebuffer fbFull(WW, WH);
     Framebuffer fb32(32, 32);
@@ -57,11 +57,8 @@ int main(void) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    //glBindBuffer(GL_ARRAY_BUFFER, quadId);
+    glBindBuffer(GL_ARRAY_BUFFER, quadId);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
-
-    //  Render to texture shit
-
 
     //  Time
     double t = 0.0;
@@ -96,7 +93,8 @@ int main(void) {
             life.draw(quadId, fb32, ar);
         }
 		else if (t >= LIFETIME) {
-			//life.drawBuffer(quadId, fb32);
+			life.drawBuffer(quadId, fb32);
+            //life.draw(quadId, fb32, ar);
 			torus.draw(fb32, t);
 		}
 

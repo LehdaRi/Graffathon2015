@@ -16,7 +16,7 @@ in vec2 UV;
 
 out vec4 color;
 
-uniform sampler2D frameTexture;
+uniform sampler2D shadeTexture;
 uniform float aspectRatio;
 
 void main() {

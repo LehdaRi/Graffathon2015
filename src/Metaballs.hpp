@@ -29,12 +29,12 @@ private:
         float ySpeed, yPhase, yTrans, yAmp;
         float zSpeed, zPhase, zTrans, zAmp;
         float sizeSpeed, sizePhase, sizeTrans, sizeAmp;
-        //float colorSpeed, colorPhase, colorTrans, colorAmp;
+        float colorSpeed, colorPhase, colorTrans, colorAmp;
     };
 
     BallParams ballParams[NBALLS];
 
-    float ballData[NBALLS*4];
+    float ballData[NBALLS*5];
 
     Eigen::Vector3f cameraPos_;
     Eigen::Matrix3f cameraView_;

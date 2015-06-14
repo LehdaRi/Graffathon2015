@@ -25,7 +25,7 @@ const float xDis = 1.0/float(xSize);
 const float yDis = 1.0/float(ySize);
 
 void main() {
-    int nnR = 0;
+    int nnR = 0; int nnG = 0; int nnB = 0;
     color = round(vec4(texture(gameTexture, UV).xyz, 1.0f));
 
     for (int i=-1; i<2; ++i) {
@@ -33,8 +33,9 @@ void main() {
             if (i==0 && j==0)
                 continue;
             vec4 pix = round(texture(gameTexture, UV+vec2(i*xDis, j*yDis)));
-            if (pix.r == 1.0)
-                nnR++;
+            if (pix.r == 1.0) nnR++;
+            if (pix.g == 1.0) nnG++;
+            if (pix.b == 1.0) nnB++;
         }
     }
 
@@ -49,9 +50,27 @@ void main() {
             color.r = 1.0;
     }
 
-    //color = vec4(round(texture(gameTexture, UV)).r, 0.0, nnR/8.0, 1.0);
+    if (color.g == 1.0) {
+        if (nnG < 2)
+            color.g = 0.0;
+        else if (nnG > 3)
+            color.g = 0.0;
+    }
+    else {
+        if (nnG == 3)
+            color.g = 1.0;
+    }
 
-    //color = texture(gameTexture, UV);
+    if (color.b == 1.0) {
+        if (nnB < 2)
+            color.b = 0.0;
+        else if (nnB > 3)
+            color.b = 0.0;
+    }
+    else {
+        if (nnB == 3)
+            color.b = 1.0;
+    }
 }
 
 

@@ -30,10 +30,10 @@ Metaballs::Metaballs(std::default_random_engine& rnd,
         ballParams[i].sizePhase = rnd()*rn*PI*2.0f;
         ballParams[i].sizeTrans = 0.075f+rnd()*rn*0.03f;
         ballParams[i].sizeAmp = 0.035f+rnd()*rn*0.025f;
-        /*ballParams[i].colorSpeed = 0.1f+rnd()*rn*0.9f;
+        ballParams[i].colorSpeed = 0.2f+rnd()*rn*1.8f;
         ballParams[i].colorPhase = rnd()*rn*PI*2.0f;
-        ballParams[i].colorTrans = 0.042f+rnd()*rn*0.021f;
-        ballParams[i].colorAmp = 0.015f+rnd()*rn*0.015f;*/
+        ballParams[i].colorTrans = 0.25f+rnd()*rn*0.25f;
+        ballParams[i].colorAmp = 0.1f+rnd()*rn*0.4f;
     }
 
     ShaderObject vs(vsFileName, GL_VERTEX_SHADER);
@@ -55,7 +55,7 @@ void Metaballs::draw(GLuint quadId, float time, float aspectRatio) {
     glUseProgram(shader_.getId());
 
     glUniform1f(uniformLoc_aspectRatio_, aspectRatio);
-    glUniform4fv(uniformLoc_ballPos_, NBALLS*4, ballData);
+    glUniform1fv(uniformLoc_ballPos_, NBALLS*5, ballData);
     glUniform3fv(uniformLoc_cameraPosition_, 1, cameraPos_.data());
     glUniformMatrix3fv(uniformLoc_cameraOrientation_, 1, GL_FALSE, cameraView_.data());
 
@@ -72,10 +72,11 @@ void Metaballs::draw(GLuint quadId, Framebuffer& fb, float time, float aspectRat
 
 void Metaballs::generateBallData(float time) {
     for (auto i=0; i<NBALLS; ++i) {
-        ballData[4*i] = ballParams[i].xTrans + ballParams[i].xAmp*sinf(ballParams[i].xSpeed*time + ballParams[i].xPhase);
-        ballData[4*i+1] = ballParams[i].yTrans + ballParams[i].yAmp*sinf(ballParams[i].ySpeed*time + ballParams[i].yPhase);
-        ballData[4*i+2] = ballParams[i].zTrans + ballParams[i].zAmp*sinf(ballParams[i].zSpeed*time + ballParams[i].zPhase);
-        ballData[4*i+3] = ballParams[i].sizeTrans + ballParams[i].sizeAmp*sinf(ballParams[i].sizeSpeed*time + ballParams[i].sizePhase);
+        ballData[5*i] = ballParams[i].xTrans + ballParams[i].xAmp*sinf(ballParams[i].xSpeed*time + ballParams[i].xPhase);
+        ballData[5*i+1] = ballParams[i].yTrans + ballParams[i].yAmp*sinf(ballParams[i].ySpeed*time + ballParams[i].yPhase);
+        ballData[5*i+2] = ballParams[i].zTrans + ballParams[i].zAmp*sinf(ballParams[i].zSpeed*time + ballParams[i].zPhase);
+        ballData[5*i+3] = ballParams[i].sizeTrans + ballParams[i].sizeAmp*sinf(ballParams[i].sizeSpeed*time + ballParams[i].sizePhase);
+        ballData[5*i+4] = ballParams[i].colorTrans + ballParams[i].colorAmp*sinf(ballParams[i].colorSpeed*time + ballParams[i].colorPhase);
     }
 }
 
