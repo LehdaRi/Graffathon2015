@@ -233,8 +233,8 @@ bool GTSynth::getChunk(std::vector<int16_t>& buff) {
 		if(currSample_ >= songSize_) {
 			for(int j = i; j < buff.size(); ++j) {
 				buff[j] = 0;
+				selectSong(selectedSong_);
 				return false;
-				selectedSong_ = -1;
 			}
 		}
 		buff[i] = renderedSongs_[selectedSong_][currSample_];
