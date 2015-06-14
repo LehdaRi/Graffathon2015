@@ -25,6 +25,7 @@ private:
     GLint uniformLoc_gameTexture_;
     GLint uniformLoc_shadeTexture_;
     GLint uniformLoc_aspectRatio_;
+    GLuint gameTextureCopy_;
 };
 
 

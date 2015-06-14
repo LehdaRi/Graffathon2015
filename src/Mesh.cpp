@@ -332,8 +332,8 @@ Mesh Mesh::torus(float major_radius, float minor_radius, size_t major_steps, siz
 
 		for (size_t j = 0; j < minor_steps; ++j) {
 			float minor_angle = j * minor_angle_incr;
-			Vector3f minor_dir = cosf(PI / 2 + minor_angle) * major_dir
-							   + sinf(PI / 2 + minor_angle) * Vector3f(0.0f, 1.0f, 0.0f);
+			Vector3f minor_dir = cosf(3 * PI / 2 + minor_angle) * major_dir
+							   + sinf(3 * PI / 2 + minor_angle) * Vector3f(0.0f, 1.0f, 0.0f);
 			vertices.push_back(center + minor_radius * minor_dir);
 		}
 	}

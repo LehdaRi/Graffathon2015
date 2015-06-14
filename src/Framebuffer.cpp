@@ -41,6 +41,7 @@ Framebuffer::~Framebuffer(void) {
 
 void Framebuffer::bind(void) {
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
+    glDrawBuffers(1, drawBuffers);
     glViewport(0, 0, width_, height_);
 }
 

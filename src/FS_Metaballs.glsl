@@ -94,7 +94,7 @@ void main() {
     ray = normalize(ray);
     float dis = 1.0;
 
-    color = vec4(sin(ballPos[0]*2.56+pos.x*14.3)+cos(ballPos[5]*6.76+pos.y), cos(ballPos[1]+pos.y)+pos.z*0.3, sin(ballPos[2]+pos.z), 1.0);
+    color = vec4(sin(ballPos[0]*2.56+pos.x*14.3)+cos(ballPos[5]*6.76+pos.y*2.34), cos(ballPos[1]+pos.y)+pos.z*0.3, sin(ballPos[2]+pos.z), 1.0);
 
     float t = 0.0;
     for (int i=0; i<maxSteps; ++i) {

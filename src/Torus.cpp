@@ -9,17 +9,13 @@ Torus::Torus(float majorRadius, float minorRadius, size_t majorSteps, size_t min
 void Torus::draw(Framebuffer& gameFb, float time) {
 	GLint old_fbo; glGetIntegerv(GL_FRAMEBUFFER_BINDING, &old_fbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glDepthFunc(GL_LESS);
-	glDepthMask(GL_TRUE);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	int width = 1280; int height = 720;
 	glViewport(0, 0, width, height);
 
 	// Camera.
-	Eigen::Vector3f eye					= Eigen::Vector3f(4 * std::sin(time), 3, 4 * std::cos(time));
+	Eigen::Vector3f eye					= Eigen::Vector3f(4 * std::sin(time), 2, 4 * std::cos(time));
 	Eigen::Matrix4f view				= GLUtils::look_at(eye);
 	Eigen::Matrix4f projection			= GLUtils::perspective(width, height, PI / 2);
 
